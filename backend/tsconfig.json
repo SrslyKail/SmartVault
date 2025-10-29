@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    /* Base Options: */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    /* TypeScript Transpiling */
+    "module": "NodeNext",
+    "sourceMap": true,
+    "rootDir": "src/",
+    "outDir": "dist/",
+
+    "lib": ["es2023"], // need to install @types/node npm package for console.log to be recognized
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

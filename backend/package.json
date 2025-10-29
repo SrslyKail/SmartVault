@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "dist/server.ts",
+  "scripts": {
+    "dev": "npx tsc && node src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "dotenv": "^17.2.3",
+    "typescript": "^5.9.3"
+  }
+}
