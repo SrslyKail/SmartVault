@@ -1,7 +1,9 @@
 #Setup Ollama
-ARG OLLAMA_MODEL
 FROM ollama/ollama
-RUN ollama serve && ollama pull ${OLLAMA_MODEL}
+# Copy the script to the docker image
+COPY ./wait_for_ollama.sh /wait_for_ollama.sh
+# Ensure the script is executable
+RUN chmod +x /wait_for_ollama.sh
 
 # Setup uv for... reasons.
 # RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
@@ -17,3 +19,6 @@ RUN apt install -y golang-go
 
 # Install the MCP server
 RUN go install github.com/mark3labs/mcphost@latest
+
+ENTRYPOINT [ "/bin/sh", "/wait_for_ollama.sh" ]
+
