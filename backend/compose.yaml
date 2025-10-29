@@ -1,0 +1,43 @@
+services:
+  obsidian:
+    image: lscr.io/linuxserver/obsidian:latest
+    container_name: Obsidian
+    ports: 
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - /etc/obsidian/config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    restart: unless-stopped
+    shm_size: "1gb"
+
+  ollama: 
+    build:
+      context: .
+    container_name: ollama
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - 11434:11434
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+    
+  # mcp:
+  #   image: mcp/obsidian
+  #   container_name: Obsidian_mcp
+  #   ports:
+  #     - 12345:12345
+  #   extra_hosts:
+  #     - "model-runner.docker.internal:host-gateway"
+  #   env_file: .env
+  #   command: ["docker", "mcp", "gateway", "run"]
+
+volumes:
+  ollama:
+  obs_data:
+  obs_settings:
+
+
