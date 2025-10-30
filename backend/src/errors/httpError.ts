@@ -4,17 +4,21 @@ import { logger } from "../services/logger.service.ts";
 
 export class HttpError extends Error {
 
-  httpStatusCode;
+  private httpStatusCode;
 
   constructor(httpStatusCode: number, message: string) {
     super(message);
     this.httpStatusCode = httpStatusCode;
   }
 
-  static extractErrorCodeAndMessage(error: unknown) {
+  public static extractErrorCodeAndMessage(error: unknown) {
 
-    logger.info(`${(error as any).message}`);
-
+    try {
+      logger.info(`${(error as any).message}`);
+    }
+    catch (loggingError) {
+      logger.info("An unkown error occured");
+    }
 
     let errorCode = HTTP_STATUS_CODES.SERVER_ERROR;
     let errorMsg  = HTTP_ERRORS.SERVER_ERROR;
