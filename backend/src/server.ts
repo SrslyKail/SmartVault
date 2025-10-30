@@ -13,7 +13,7 @@ const getHelloMsg = (req: Request, res: Response) => {
   res.status(HTTP_STATUS_CODES.OK).send("Hello World");
 }
 
-app.get("/api", getHelloMsg);
+app.get("/", getHelloMsg);
 app.post("/api/auth/login", authController.login.bind(authController));
 app.post("/api/auth/signup", authController.signup.bind(authController));
 

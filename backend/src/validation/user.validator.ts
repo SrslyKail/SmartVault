@@ -5,6 +5,7 @@ import { AUTH_ERRORS } from "../lang/en.ts";
 export class UserValidator {
   constructor() {}
 
+  //todo: use join schema evaluation instead
   public tryValidateUsernameAndPassword(username: string, password: string) {
     if (!username) {
       throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMPTY_USERNAME_ERROR);
