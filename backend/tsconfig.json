@@ -21,6 +21,9 @@
     "rootDir": "src/",
     "outDir": "dist/",
 
+    /* Import using .ts file extensions instead of .js */
+    "rewriteRelativeImportExtensions": true,
+
     "lib": ["es2023"], // need to install @types/node npm package for console.log to be recognized
   },
   "include": [
