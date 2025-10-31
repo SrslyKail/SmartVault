@@ -7,14 +7,13 @@ using SmartVaultClient.Services;
 
 namespace SmartVaultClient.Helpers;
 
-public class FakeBackendHandler : HttpClientHandler
+/// <summary>
+/// Fake backend code to let the client work without a real backend.
+/// To disable/enable it, change the fakeBackend variable in appsettings.json.
+/// </summary>
+public class FakeBackendHandler(ILocalStorageService localStorageService) : HttpClientHandler
 {
-    private ILocalStorageService _localStorageService;
-
-    public FakeBackendHandler(ILocalStorageService localStorageService)
-    {
-        _localStorageService = localStorageService;
-    }
+    private readonly ILocalStorageService _localStorageService = localStorageService;
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
@@ -96,7 +95,7 @@ public class FakeBackendHandler : HttpClientHandler
             }
 
             var bodyJson = await request.Content.ReadAsStringAsync(cancellationToken);
-            var body = JsonSerializer.Deserialize<AddUser>(bodyJson);
+            var body = JsonSerializer.Deserialize<Registration>(bodyJson);
 
             if (body == null)
             {

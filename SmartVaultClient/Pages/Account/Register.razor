@@ -9,16 +9,6 @@
         <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
             <DataAnnotationsValidator />
             <div class="form-group">
-                <label>First Name</label>
-                <InputText @bind-Value="model.FirstName" class="form-control" />
-                <ValidationMessage For="@(() => model.FirstName)" />
-            </div>
-            <div class="form-group">
-                <label>Last Name</label>
-                <InputText @bind-Value="model.LastName" class="form-control" />
-                <ValidationMessage For="@(() => model.LastName)" />
-            </div>
-            <div class="form-group">
                 <label>Username</label>
                 <InputText @bind-Value="model.Username" class="form-control" />
                 <ValidationMessage For="@(() => model.Username)" />
@@ -41,7 +31,7 @@
 </div>
 
 @code {
-    private AddUser model = new AddUser();
+    private Registration model = new Registration();
     private bool loading;
 
     private async void OnValidSubmit()

@@ -1,5 +1,8 @@
 namespace SmartVaultClient.Models;
 
+/// <summary>
+/// Data model for an alert UI element.
+/// </summary>
 public class Alert
 {
     public string? Id { get; set; }

@@ -1,9 +1,12 @@
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace SmartVaultClient.Helpers;
 
+/// <summary>
+/// Custom JSON converter that converts integers to strings.
+/// This allows the client to work with a backend that uses either integer IDs and string IDs
+/// </summary>
 public class StringConverter : JsonConverter<string>
 {
     public override string Read(

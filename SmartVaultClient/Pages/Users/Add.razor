@@ -1,5 +1,5 @@
 ﻿@page "/users/add"
-@attribute [Authorize]
+@attribute [Authorize(Roles=$"{Roles.ADMIN}")]
 @inject IAlertService AlertService
 @inject IAccountService AccountService
 @inject NavigationManager NavigationManager
@@ -32,7 +32,7 @@
 </EditForm>
 
 @code {
-    private AddUser model = new AddUser();
+    private Registration model = new Registration();
     private bool loading;
 
     private async void OnValidSubmit()

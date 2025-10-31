@@ -10,7 +10,7 @@ public interface IAccountService
     Task Initialize();
     Task Login(Login model);
     Task Logout();
-    Task Register(AddUser model);
+    Task Register(Registration model);
     Task<IList<User>> GetAll();
     Task<User> GetById(string id);
     Task Delete(string id);
@@ -47,7 +47,7 @@ public class AccountService(
         _navigationManager.NavigateTo("account/login");
     }
 
-    public async Task Register(AddUser model)
+    public async Task Register(Registration model)
     {
         await _httpService.Post("/users/register", model);
     }
