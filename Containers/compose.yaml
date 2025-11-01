@@ -1,8 +1,11 @@
 name: SmartVault
 services:
   obsidian:
-    image: lscr.io/linuxserver/obsidian:latest
-    container_name: Obsidian
+    build:
+      context: .
+      dockerfile: obsidian.Dockerfile
+    # image: lscr.io/linuxserver/obsidian:latest
+    container_name: obsidian
     ports: 
       - 3000:3000
       - 3001:3001
@@ -13,7 +16,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - OBSIDIAN_ENDPOINT=${OBSIDIAN_ENDPOINT}
       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
       - OBSIDIAN_TOKEN=${OBSIDIAN_TOKEN}
     restart: unless-stopped
@@ -22,6 +24,7 @@ services:
   ollama: 
     build:
       context: .
+      dockerfile: ollama.Dockerfile
       args:
         - OLLAMA_MODEL:${OLLAMA_MODEL}
     container_name: ollama

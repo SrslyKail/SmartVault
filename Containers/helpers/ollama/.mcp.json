@@ -2,7 +2,7 @@
   "mcpServers": {
     "obsidian": {
       "type": "remote", 
-      "url": "${env://OBSIDIAN_ENDPOINT}:${OBSIDIAN_PORT}",
+      "url": "https://obsidian:${env://OBSIDIAN_PORT}",
       "headers": ["Authorization: Bearer ${env://OBSIDIAN_TOKEN}"]
     }
   }

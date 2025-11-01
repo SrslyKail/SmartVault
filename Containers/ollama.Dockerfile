@@ -1,24 +1,29 @@
 #Setup Ollama
-FROM ollama/ollama
-# Copy the script to the docker image
-COPY ./helpers/ollama/wait_for_ollama.sh /wait_for_ollama.sh
-# Ensure the script is executable
-RUN chmod +x /wait_for_ollama.sh
-
+FROM ollama/ollama AS uv
 # Setup uv for mcphost
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 ADD https://astral.sh/uv/0.4.17/install.sh /uv-installer.sh
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin/:$PATH"
 
+FROM uv AS go
 # Setup go for installing and running MCP server
 RUN apt-get update 
 RUN apt-get install -y golang-go
-
 # Install the MCP server
 RUN go install github.com/mark3labs/mcphost@latest
+
+FROM go AS end
 # ARG OLLAMA_MODEL
 ENV PATH="/root/go/bin:${PATH}"
-# ENV OLLAMA_MODEL $OLLAMA_MODEL
+# Copy the script to the docker image
+COPY ./helpers/ollama/wait_for_ollama.sh /wait_for_ollama.sh
+COPY ./helpers/ollama/.mcp.json /root/.mcp.json
+# COPY ./helpers/obsidian/vaults /config/vaults/
+# RUN jq '.apiKey="$OBSIDIAN_TOKEN"' /config/vaults/VAULTS/.obsidian/plugins/obsidian-local-rest-api/data.json
+
+# Ensure the script is executable
+RUN chmod +x /wait_for_ollama.sh
+
 ENTRYPOINT [ "/bin/sh", "/wait_for_ollama.sh" ]
 
