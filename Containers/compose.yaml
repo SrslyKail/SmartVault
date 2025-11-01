@@ -1,3 +1,4 @@
+name: SmartVault
 services:
   obsidian:
     image: lscr.io/linuxserver/obsidian:latest
@@ -7,10 +8,14 @@ services:
       - 3001:3001
     volumes:
       - /etc/obsidian/config:/config
+      - obsidian_vaults:/config/vaults/
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
+      - OBSIDIAN_ENDPOINT=${OBSIDIAN_ENDPOINT}
+      - OBSIDIAN_PORT=${OBSIDIAN_PORT}
+      - OBSIDIAN_TOKEN=${OBSIDIAN_TOKEN}
     restart: unless-stopped
     shm_size: "1gb"
 
@@ -18,29 +23,18 @@ services:
     build:
       context: .
       args:
-        "OLLAMA_MODEL": ${OLLAMA_MODEL}
-      
+        - OLLAMA_MODEL:${OLLAMA_MODEL}
     container_name: ollama
     volumes:
       - ollama:/root/.ollama
-      - obsidian:/root/obsidian
-        # - ./ollama/ollama:/root/.ollama
     # pull_policy: always
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
     ports:
       - 11434:11434
-    
-  # mcp:
-  #   image: mcp/obsidian
-  #   container_name: Obsidian_mcp
-  #   ports:
-  #     - 12345:12345
-  #   extra_hosts:
-  #     - "model-runner.docker.internal:host-gateway"
-  #   env_file: .env
-  #   command: ["docker", "mcp", "gateway", "run"]
 
 volumes:
   ollama:
-  obsidian:
+  obsidian_vaults:
 
 
