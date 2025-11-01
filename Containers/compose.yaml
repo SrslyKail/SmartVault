@@ -22,8 +22,9 @@ services:
       
     container_name: ollama
     volumes:
-        - ./ollama/ollama:/root/.ollama
-        - ./entrypoint.sh:/entrypoint.sh
+      - ollama:/root/.ollama
+      - obsidian:/root/obsidian
+        # - ./ollama/ollama:/root/.ollama
     # pull_policy: always
     ports:
       - 11434:11434
@@ -40,7 +41,6 @@ services:
 
 volumes:
   ollama:
-  obs_data:
-  obs_settings:
+  obsidian:
 
 
