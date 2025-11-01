@@ -1,0 +1,22 @@
+@inherits LayoutComponentBase
+@layout MainLayout
+@inject IAccountService AccountService
+@inject NavigationManager NavigationManager
+
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="text-center mb-4">
+        <h1 class="h2 mb-0">Smart Vault API</h1>
+    </div>
+    @Body
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        // redirect to home if already logged in
+        if (AccountService.User != null)
+        {
+            NavigationManager.NavigateTo("");
+        }
+    }
+}
