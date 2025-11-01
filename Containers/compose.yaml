@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: obsidian.Dockerfile
-    # image: lscr.io/linuxserver/obsidian:latest
     container_name: obsidian
     ports: 
       - 3000:3000
@@ -39,5 +38,3 @@ services:
 volumes:
   ollama:
   obsidian_vaults:
-
-

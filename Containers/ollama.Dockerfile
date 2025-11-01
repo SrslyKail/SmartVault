@@ -19,8 +19,6 @@ ENV PATH="/root/go/bin:${PATH}"
 # Copy the script to the docker image
 COPY ./helpers/ollama/wait_for_ollama.sh /wait_for_ollama.sh
 COPY ./helpers/ollama/.mcp.json /root/.mcp.json
-# COPY ./helpers/obsidian/vaults /config/vaults/
-# RUN jq '.apiKey="$OBSIDIAN_TOKEN"' /config/vaults/VAULTS/.obsidian/plugins/obsidian-local-rest-api/data.json
 
 # Ensure the script is executable
 RUN chmod +x /wait_for_ollama.sh
