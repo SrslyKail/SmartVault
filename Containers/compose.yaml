@@ -12,8 +12,8 @@ services:
     environment:
       - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
-    ports:
-      - 27124:27124  # Default port for Obsidian Local REST API
+    # ports:
+    #   - 27124:27124  # Default port for Obsidian Local REST API
     volumes:
       - ./logs:/app/logs
     # restart: unless-stopped 
@@ -25,6 +25,7 @@ services:
     ports: 
       - 3000:3000
       - 3001:3001
+      - 27124:27124
     volumes:
       - /etc/obsidian/config:/config
       - obsidian_vaults:/config/vaults/
@@ -46,6 +47,7 @@ services:
       - ollama:/root/.ollama
     # pull_policy: always
     environment:
+      - OBSIDIAN_HOST=https://obsidian
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
       - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}

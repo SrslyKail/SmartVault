@@ -20,6 +20,11 @@ ENV PATH="/root/go/bin:${PATH}"
 COPY ./helpers/ollama/wait_for_ollama.sh /wait_for_ollama.sh
 COPY ./helpers/ollama/.mcp.json /root/.mcp.json
 
+RUN cd /root
+RUN echo OBSIDIAN_API_KEY=$OBSIDIAN_API_KEY > .env && \
+    echo OBSIDIAN_HOST=obsidian >> .env && \
+    echo OBSIDIAN_PORT=$OBSIDIAN_PORT >> .env
+
 # Ensure the script is executable
 RUN chmod +x /wait_for_ollama.sh
 

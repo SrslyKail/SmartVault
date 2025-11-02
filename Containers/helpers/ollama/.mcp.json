@@ -4,7 +4,12 @@
       "command": "uvx",
       "args": [
         "mcp-obsidian"
-      ]
+      ],
+      "environment": {
+        "OBSIDIAN_API_KEY": "${env://OBSIDIAN_API_KEY}",
+        "OBSIDIAN_PORT": "${env://OBSIDIAN_PORT}",
+        "OBSIDIAN_HOST": "${env://OBSIDIAN_HOST}"
+      }
     }
   },
   "unused":
