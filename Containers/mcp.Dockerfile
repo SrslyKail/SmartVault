@@ -18,7 +18,12 @@ RUN uv pip install --system -r requirements.txt
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 
-RUN echo OBSIDIAN_API_KEY=$OBSIDIAN_TOKEN > .env
+ARG OBSIDIAN_API_KEY
+ARG OBSIDIAN_PORT
 
+RUN echo OBSIDIAN_API_KEY=$OBSIDIAN_API_KEY > .env && \
+    echo OBSIDIAN_HOST=obsidian >> .env && \
+    echo OBSIDIAN_PORT=$OBSIDIAN_PORT >> .env
 # Command to run the server
-CMD ["uv", "run", "mcp-obsidian"] 
+CMD ["uv", "run", "mcp-obsidian"]
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
