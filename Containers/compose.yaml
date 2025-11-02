@@ -47,13 +47,34 @@ services:
       - ollama:/root/.ollama
     # pull_policy: always
     environment:
-      - OBSIDIAN_HOST=https://obsidian
+      - OBSIDIAN_HOST=obsidian
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
       - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
       - OLLAMA_HOST=http://127.0.0.1
     ports:
       - 11434:11434
+
+  joint:
+    container_name: combined_arms
+    build:
+      context: .
+      dockerfile: joint.Dockerfile
+    ports:
+      - 3000:3000
+      - 3001:3001
+      - 27124:27124
+      - 11434:11434
+    environment:
+      - OBSIDIAN_HOST=obsidian
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - OBSIDIAN_PORT=${OBSIDIAN_PORT}
+      - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
+      - OLLAMA_HOST=http://127.0.0.1
+    volumes:
+      - ollama:/root/.ollama
+      - /etc/obsidian/config:/config
+      - obsidian_vaults:/config/vaults/
 
 volumes:
   ollama:
