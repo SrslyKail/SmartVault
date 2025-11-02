@@ -27,7 +27,6 @@ export class HttpError extends Error {
       errorCode = error.httpStatusCode;
       errorMsg  = error.message;
     }
-        
 
     return { code: errorCode, message: (errorCode === HTTP_STATUS_CODES.SERVER_ERROR) ? HTTP_ERRORS.SERVER_ERROR : errorMsg }
   }
