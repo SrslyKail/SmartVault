@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "mpc-obsidian": {
+      "command": "uvx",
+      "args": [
+        "mcp-obsidian"
+      ]
+    }
+  },
+  "unused":
+  {
+    "obsidian": {
+      "type": "remote", 
+      "url": "https://obsidian:${env://OBSIDIAN_PORT}",
+      "headers": ["Authorization: Bearer ${env://OBSIDIAN_API_KEY}"]
+    }
+  }
+}
