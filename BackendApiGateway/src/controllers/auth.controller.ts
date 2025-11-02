@@ -5,7 +5,7 @@ import { logger } from '../services/logger.service.ts';
 import type { UserService } from '../services/user.service.ts';
 import type { User } from '../types/index.ts';
 import { HTTP_STATUS_CODES } from '../constants/httpResponse.ts';
-import type { UserValidator } from '../validation/user.validator.ts';
+import type { UserValidator } from '../validation/user/user.validator.ts';
 
 export class AuthController {
 
@@ -29,9 +29,9 @@ export class AuthController {
 
       // console.log("recieved request");
 
-      const { username, password, } = req.body;
+      const { email, password, } = req.body;
       
-      const user: User = await this.userService.tryFindUserByEmailAndPassword(username, password);
+      const user: User = await this.userService.tryFindUserByUsernameAndPassword(email, password);
 
       const jwtToken = "1234";//this.authTokenService.<>(user);
 
@@ -40,7 +40,7 @@ export class AuthController {
       }
 
       logger.info(
-        `User signed in with: ${user.id}, username: ${username}`
+        `User signed in with: ${user.id}, email: ${email}`
       );
 
       res.status(HTTP_STATUS_CODES.OK).json(resData);
@@ -48,7 +48,7 @@ export class AuthController {
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
       logger.error(
-        `Username: ${req.body.username}, Password: ${req.body.password}, ${code}, ${message}`
+        `Username: ${req.body.email}, hashed password: ${req.body.password}, ${code}, ${message}`
       );
       const resData = { message: message };
 
@@ -58,12 +58,15 @@ export class AuthController {
 
   public async signup(req: Request, res: Response) {
     try {
-      const { username, password } = req.body;
+      const { email, password } = req.body;
 
-      //todo: validate username and password
-      this.userValidator.tryValidateUsernameAndPassword(username, password);
+      //todo: validate email and password
+      this.userValidator.tryValidateEmailAndPassword(email, password);
+
+      // check if user email already exists in db
+      this.userService.tryFindUserByUsernameAndPassword(email, password);
       
-      const user: User = await this.userService.createNewUser(username, password);
+      const user: User = await this.userService.createNewUser(email, password);
 
       const jwtToken = "1234";//this.authTokenService.<>(user);
 
@@ -72,7 +75,7 @@ export class AuthController {
       }
 
       logger.info(
-        `User created with id: ${user.id}, username: ${user.username}, hashed password: ${user.hashedPassword}`
+        `User created with id: ${user.id}, email: ${user.email}, hashed password: ${user.hashedPassword}`
       );
 
       res.status(HTTP_STATUS_CODES.CREATED).json(resData);
@@ -80,7 +83,7 @@ export class AuthController {
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
       logger.error(
-        `Username: ${req.body.username}, Password: ${req.body.password}, ${code}, ${message}`
+        `Username: ${req.body.email}, Password: ${req.body.password}, ${code}, ${message}`
       );
       const resData = { message: message };
 

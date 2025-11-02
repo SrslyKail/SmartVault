@@ -16,14 +16,14 @@ export class UserService {
     this.users = [];
   }
 
-  public async createNewUser(username: string, password: string): Promise<User> {
+  public async createNewUser(email: string, password: string): Promise<User> {
 
     const id = crypto.randomUUID();
     const hashedPassword = await bcrypt.hash(password, UserService.NUM_SALT_ROUNDS);
 
     const user: User = {
       id: id,
-      username: username,
+      email: email,
       hashedPassword: hashedPassword
     };
 
@@ -36,10 +36,16 @@ export class UserService {
     return user;
   }
 
-  public async tryFindUserByEmailAndPassword(username: string, password: string): Promise<User> {
+  public async findUserByUsername(email: string): Promise<User | null> {
+    //todo: Prisma find one DB select unique
+    const user: User | undefined = this.users.find((user) => user.email === email);
+    return user ?? null;
+  }
+
+  public async tryFindUserByUsernameAndPassword(email: string, password: string): Promise<User> {
 
     //todo: Prisma find one DB select unique
-    const user: User | undefined = this.users.find((user) => user.username === username);
+    const user: User | null = await this.findUserByUsername(email);
 
     // If user email does not exist
     if (!user) {

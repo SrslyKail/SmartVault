@@ -4,10 +4,10 @@ export const HTTP_ERRORS = {
 };
 
 export const AUTH_ERRORS = {
-  EMPTY_USERNAME_ERROR: "Please enter a username",
+  EMPTY_USERNAME_ERROR: "Please enter a email",
   EMPTY_PASSWORD_ERROR: "Please enter a password",
 
 
-  USER_NOT_FOUND_ERROR: "User not found with this username",
+  USER_NOT_FOUND_ERROR: "User not found with this email",
   INCORRECT_PASSWORD_ERROR: "The entered password is incorrect"
 };
