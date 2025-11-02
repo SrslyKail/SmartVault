@@ -8,6 +8,10 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="navbar-nav">
             <NavLink href="" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
+            @if (AccountService.User.IsAdmin)
+            {
+            <NavLink href="users" class="nav-item nav-link">Users</NavLink>
+            }
             <NavLink href="chat" class="nav-item nav-link">Chat</NavLink>
             <NavLink href="account/logout" class="nav-item nav-link">Logout</NavLink>
         </div>
