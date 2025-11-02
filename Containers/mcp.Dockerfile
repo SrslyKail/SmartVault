@@ -26,4 +26,4 @@ RUN echo OBSIDIAN_API_KEY=$OBSIDIAN_API_KEY > .env && \
     echo OBSIDIAN_PORT=$OBSIDIAN_PORT >> .env
 # Command to run the server
 CMD ["uv", "run", "mcp-obsidian"]
-# ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]

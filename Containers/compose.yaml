@@ -1,7 +1,7 @@
 version: '3.8'
 name: SmartVault
 services:
-  mcp:
+  obsidian-mcp:
     build:
       context: .
       dockerfile: mcp.Dockerfile
@@ -48,8 +48,8 @@ services:
     environment:
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
-      - OBSIDIAN_TOKEN=${OBSIDIAN_TOKEN}
-      - OLLAMA_HOST=127.0.0.1
+      - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
+      - OLLAMA_HOST=http://127.0.0.1
     ports:
       - 11434:11434
 
