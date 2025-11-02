@@ -36,16 +36,16 @@ export class UserService {
     return user;
   }
 
-  public async findUserByUsername(email: string): Promise<User | null> {
+  public async findUserByEmail(email: string): Promise<User | null> {
     //todo: Prisma find one DB select unique
     const user: User | undefined = this.users.find((user) => user.email === email);
     return user ?? null;
   }
 
-  public async tryFindUserByUsernameAndPassword(email: string, password: string): Promise<User> {
+  public async tryFindUserByEmailAndPassword(email: string, password: string): Promise<User> {
 
     //todo: Prisma find one DB select unique
-    const user: User | null = await this.findUserByUsername(email);
+    const user: User | null = await this.findUserByEmail(email);
 
     // If user email does not exist
     if (!user) {

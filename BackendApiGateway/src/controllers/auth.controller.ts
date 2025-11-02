@@ -31,7 +31,7 @@ export class AuthController {
 
       const { email, password, } = req.body;
       
-      const user: User = await this.userService.tryFindUserByUsernameAndPassword(email, password);
+      const user: User = await this.userService.tryFindUserByEmailAndPassword(email, password);
 
       const jwtToken = "1234";//this.authTokenService.<>(user);
 
@@ -48,7 +48,7 @@ export class AuthController {
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
       logger.error(
-        `Username: ${req.body.email}, hashed password: ${req.body.password}, ${code}, ${message}`
+        `Email: ${req.body.email}, hashed password: ${req.body.password}, ${code}, ${message}`
       );
       const resData = { message: message };
 
@@ -64,7 +64,7 @@ export class AuthController {
       this.userValidator.tryValidateEmailAndPassword(email, password);
 
       // check if user email already exists in db
-      this.userService.tryFindUserByUsernameAndPassword(email, password);
+      this.userService.tryFindUserByEmailAndPassword(email, password);
       
       const user: User = await this.userService.createNewUser(email, password);
 
@@ -83,7 +83,7 @@ export class AuthController {
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
       logger.error(
-        `Username: ${req.body.email}, Password: ${req.body.password}, ${code}, ${message}`
+        `Email: ${req.body.email}, Password: ${req.body.password}, ${code}, ${message}`
       );
       const resData = { message: message };
 
