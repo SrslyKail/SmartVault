@@ -1,5 +1,18 @@
+version: '3.8'
 name: SmartVault
 services:
+  mcp:
+    build:
+      context: .
+      dockerfile: mcp.Dockerfile
+    container_name: mcp-obsidian
+    environment:
+      - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
+    ports:
+      - 27124:27124  # Default port for Obsidian Local REST API
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped 
   obsidian:
     build:
       context: .
@@ -15,8 +28,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - OBSIDIAN_PORT=${OBSIDIAN_PORT}
-      - OBSIDIAN_TOKEN=${OBSIDIAN_TOKEN}
     restart: unless-stopped
     shm_size: "1gb"
 
@@ -32,6 +43,8 @@ services:
     # pull_policy: always
     environment:
       - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - OBSIDIAN_PORT=${OBSIDIAN_PORT}
+      - OBSIDIAN_TOKEN=${OBSIDIAN_TOKEN}
     ports:
       - 11434:11434
 
