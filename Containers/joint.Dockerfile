@@ -1,5 +1,8 @@
 FROM lscr.io/linuxserver/obsidian:latest AS base
-COPY ./helpers/obsidian/vaults /config/vaults/
+WORKDIR /config
+COPY ./helpers/obsidian/vaults ./vaults
+# Copy the script to the docker image
+COPY ./helpers/ollama ./helpers
 
 FROM base AS ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
@@ -14,22 +17,23 @@ FROM uv AS go
 # Setup go for installing and running MCP server
 RUN apt-get update 
 RUN apt-get install -y golang-go
-# Install the MCP server
-RUN go install github.com/mark3labs/mcphost@latest
+ENV PATH="/config/go/bin:$PATH"
 
 FROM go AS end
 # ARG OLLAMA_MODEL
-ENV PATH="/config/go/bin:${PATH}"
-# Copy the script to the docker image
-COPY ./helpers/ollama/wait_for_ollama.sh /config/wait_for_ollama.sh
-COPY ./helpers/ollama/.mcp.json /config/.mcp.json
+# Install the MCP server
+RUN go install github.com/mark3labs/mcphost@latest
+
+# COPY ./helpers/ollama/.mcp.json ./.mcp.json
+
 
 RUN echo OBSIDIAN_API_KEY=$OBSIDIAN_API_KEY > .env && \
     echo OBSIDIAN_HOST=obsidian >> .env && \
     echo OBSIDIAN_PORT=$OBSIDIAN_PORT >> .env
 
 # Ensure the script is executable
-RUN chmod +x /config/wait_for_ollama.sh
+RUN chmod +x /config/helpers/wait_for_ollama.sh
 
-ENTRYPOINT [ "/bin/sh", "/wait_for_ollama.sh" ]
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
+# CMD [ "/bin/sh", "/config/wait_for_ollama.sh" ]
 
