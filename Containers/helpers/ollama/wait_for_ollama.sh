@@ -7,12 +7,12 @@ pid=$!
 
 # Pause for Ollama to start.
 sleep 5
-
-echo "🔴 Retrieving model..."
-ollama pull qwen3:8b
+echo $OLLAMA_MODEL
+echo "🔴 Retrieving model $OLLAMA_MODEL..."
+ollama pull $OLLAMA_MODEL
 echo "🟢 Done!"
 
 # Wait for Ollama process to finish.
 wait $pid
 
-ollama run qwen3:8b
+ollama run $OLLAMA_MODEL
