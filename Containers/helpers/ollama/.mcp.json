@@ -7,27 +7,7 @@
       ],
       "environment": {
         "OBSIDIAN_API_KEY": "${env://OBSIDIAN_API_KEY}",
-        "OBSIDIAN_PORT": "${env://OBSIDIAN_PORT}",
-        "OBSIDIAN_HOST": "${env://OBSIDIAN_HOST}"
-      }
-    }
-  },
-  "unused":
-  {
-    "obsidian": {
-      "type": "remote", 
-      "url": "https://obsidian:${env://OBSIDIAN_PORT}",
-      "headers": ["Authorization: Bearer ${env://OBSIDIAN_API_KEY}"]
-    },
-    "mpc-obsidianBAK": {
-      "command": "uvx",
-      "args": [
-        "mcp-obsidian"
-      ],
-      "environment": {
-        "OBSIDIAN_API_KEY": "${env://OBSIDIAN_API_KEY}",
-        "OBSIDIAN_PORT": "${env://OBSIDIAN_PORT}",
-        "OBSIDIAN_HOST": "${env://OBSIDIAN_HOST}"
+        "OBSIDIAN_PORT": "${env://OBSIDIAN_PORT}"
       }
     }
   }

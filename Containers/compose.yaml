@@ -1,58 +1,58 @@
 name: SmartVault
 services:
-  obsidian-mcp:
-    build:
-      context: .
-      dockerfile: mcp.Dockerfile
-      args:
-        - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
-        - OBSIDIAN_PORT=${OBSIDIAN_PORT}
-    container_name: mcp-obsidian
-    environment:
-      - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
-      - OBSIDIAN_PORT=${OBSIDIAN_PORT}
-    # ports:
-    #   - 27124:27124  # Default port for Obsidian Local REST API
-    volumes:
-      - ./logs:/app/logs
-    # restart: unless-stopped 
-  obsidian:
-    build:
-      context: .
-      dockerfile: obsidian.Dockerfile
-    container_name: obsidian
-    ports: 
-      - 3000:3000
-      - 3001:3001
-      - 27124:27124
-    volumes:
-      - /etc/obsidian/config:/config
-      - obsidian_vaults:/config/vaults/
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    restart: unless-stopped
-    shm_size: "1gb"
+  # obsidian-mcp:
+  #   build:
+  #     context: .
+  #     dockerfile: mcp.Dockerfile
+  #     args:
+  #       - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
+  #       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
+  #   container_name: mcp-obsidian
+  #   environment:
+  #     - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
+  #     - OBSIDIAN_PORT=${OBSIDIAN_PORT}
+  #   # ports:
+  #   #   - 27124:27124  # Default port for Obsidian Local REST API
+  #   volumes:
+  #     - ./logs:/app/logs
+  #   # restart: unless-stopped 
+  # obsidian:
+  #   build:
+  #     context: .
+  #     dockerfile: obsidian.Dockerfile
+  #   container_name: obsidian
+  #   ports: 
+  #     - 3000:3000
+  #     - 3001:3001
+  #     - 27124:27124
+  #   volumes:
+  #     - /etc/obsidian/config:/config
+  #     - obsidian_vaults:/config/vaults/
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Etc/UTC
+  #   restart: unless-stopped
+  #   shm_size: "1gb"
 
-  ollama: 
-    build:
-      context: .
-      dockerfile: ollama.Dockerfile
-      args:
-        - OLLAMA_MODEL:${OLLAMA_MODEL}
-    container_name: ollama
-    volumes:
-      - ollama:/root/.ollama
-    # pull_policy: always
-    environment:
-      - OBSIDIAN_HOST=obsidian
-      - OLLAMA_MODEL=${OLLAMA_MODEL}
-      - OBSIDIAN_PORT=${OBSIDIAN_PORT}
-      - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
-      - OLLAMA_HOST=http://127.0.0.1
-    ports:
-      - 11434:11434
+  # ollama: 
+  #   build:
+  #     context: .
+  #     dockerfile: ollama.Dockerfile
+  #     args:
+  #       - OLLAMA_MODEL:${OLLAMA_MODEL}
+  #   container_name: ollama
+  #   volumes:
+  #     - ollama:/root/.ollama
+  #   # pull_policy: always
+  #   environment:
+  #     - OBSIDIAN_HOST=obsidian
+  #     - OLLAMA_MODEL=${OLLAMA_MODEL}
+  #     - OBSIDIAN_PORT=${OBSIDIAN_PORT}
+  #     - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
+  #     - OLLAMA_HOST=http://127.0.0.1
+  #   ports:
+  #     - 11434:11434
 
   joint:
     container_name: combined_arms
@@ -60,21 +60,27 @@ services:
       context: .
       dockerfile: joint.Dockerfile
     ports:
-      - 3000:3000
-      - 3001:3001
+      # - 3000:3000
+      # - 3001:3001
+      - 8080:8080
+      - 8443:8443
       - 27124:27124
-      - 11434:11434
+      # - 11434:11434
     environment:
-      - OBSIDIAN_HOST=obsidian
+      # - OBSIDIAN_HOST=obsidian
       - OLLAMA_MODEL=${OLLAMA_MODEL}
       - OBSIDIAN_PORT=${OBSIDIAN_PORT}
       - OBSIDIAN_API_KEY=${OBSIDIAN_TOKEN}
-      - OLLAMA_HOST=http://127.0.0.1
+      # - OLLAMA_HOST=http://127.0.0.1
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles0
     volumes:
       - ollama:/root/.ollama
-      - /etc/obsidian/config:/config
-      - obsidian_vaults:/config/vaults/
+      # - /etc/obsidian/config:/config
+      - obsidian_vaults:/vaults
 
 volumes:
   ollama:
   obsidian_vaults:
+  # obsidian_config:
