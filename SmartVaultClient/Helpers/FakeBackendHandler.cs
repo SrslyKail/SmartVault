@@ -1,227 +1,226 @@
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using SmartVaultClient.Models.Account;
-using SmartVaultClient.Services;
+// using System.Net;
+// using System.Text;
+// using System.Text.Json;
+// using System.Text.RegularExpressions;
+// using SmartVaultClient.Models.Account;
+// using SmartVaultClient.Services;
 
-namespace SmartVaultClient.Helpers;
+// namespace SmartVaultClient.Helpers;
 
-/// <summary>
-/// Fake backend code to let the client work without a real backend.
-/// To disable/enable it, change the fakeBackend variable in appsettings.json.
-/// </summary>
-public class FakeBackendHandler(ILocalStorageService localStorageService) : HttpClientHandler
-{
-    private readonly ILocalStorageService _localStorageService = localStorageService;
+// /// <summary>
+// /// Fake backend code to let the client work without a real backend.
+// /// To disable/enable it, change the fakeBackend variable in appsettings.json.
+// /// </summary>
+// public class FakeBackendHandler() : HttpClientHandler
+// {
 
-    protected override async Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request,
-        CancellationToken cancellationToken
-    )
-    {
-        // array in local storage for registered users
-        var usersKey = "blazor-registration-login-example-users";
-        var users = await _localStorageService.GetItem<List<UserRecord>>(usersKey) ?? [];
-        var method = request.Method;
-        var path = request.RequestUri?.AbsolutePath;
+//     protected override async Task<HttpResponseMessage> SendAsync(
+//         HttpRequestMessage request,
+//         CancellationToken cancellationToken
+//     )
+//     {
+//         // array in local storage for registered users
+//         var usersKey = "blazor-registration-login-example-users";
+//         // var users = await _localStorageService.GetItem<List<UserRecord>>(usersKey) ?? [];
+//         var method = request.Method;
+//         var path = request.RequestUri?.AbsolutePath;
 
-        if (path is null)
-        {
-            return await base.SendAsync(request, cancellationToken);
-        }
+//         if (path is null)
+//         {
+//             return await base.SendAsync(request, cancellationToken);
+//         }
 
-        return await handleRoute();
+//         return await handleRoute();
 
-        async Task<HttpResponseMessage> handleRoute()
-        {
-            if (path == "/users/authenticate" && method == HttpMethod.Post)
-                return await authenticate();
-            if (path == "/users/register" && method == HttpMethod.Post)
-                return await register();
-            if (path == "/users" && method == HttpMethod.Get)
-                return await getUsers();
-            if (Regex.Match(path, @"\/users\/\d+$").Success && method == HttpMethod.Get)
-                return await getUserById();
-            if (Regex.Match(path, @"\/users\/\d+$").Success && method == HttpMethod.Delete)
-                return await deleteUser();
+//         async Task<HttpResponseMessage> handleRoute()
+//         {
+//             if (path == "/users/authenticate" && method == HttpMethod.Post)
+//                 return await authenticate();
+//             if (path == "/users/register" && method == HttpMethod.Post)
+//                 return await register();
+//             if (path == "/users" && method == HttpMethod.Get)
+//                 return await getUsers();
+//             if (Regex.Match(path, @"\/users\/\d+$").Success && method == HttpMethod.Get)
+//                 return await getUserById();
+//             if (Regex.Match(path, @"\/users\/\d+$").Success && method == HttpMethod.Delete)
+//                 return await deleteUser();
 
-            // pass through any requests not handled above
-            return await base.SendAsync(request, cancellationToken);
-        }
+//             // pass through any requests not handled above
+//             return await base.SendAsync(request, cancellationToken);
+//         }
 
-        // route functions
+//         // route functions
 
-        async Task<HttpResponseMessage> authenticate()
-        {
-            if (request.Content == null)
-            {
-                return await base.SendAsync(request, cancellationToken);
-            }
+//         async Task<HttpResponseMessage> authenticate()
+//         {
+//             if (request.Content == null)
+//             {
+//                 return await base.SendAsync(request, cancellationToken);
+//             }
 
-            var bodyJson = await request.Content.ReadAsStringAsync(cancellationToken);
-            var body = JsonSerializer.Deserialize<Login>(bodyJson);
+//             var bodyJson = await request.Content.ReadAsStringAsync(cancellationToken);
+//             var body = JsonSerializer.Deserialize<Login>(bodyJson);
 
-            if (body == null)
-            {
-                return await base.SendAsync(request, cancellationToken);
-            }
+//             if (body == null)
+//             {
+//                 return await base.SendAsync(request, cancellationToken);
+//             }
 
-            var user = users.FirstOrDefault(x =>
-                x.Email == body.Email && x.Password == body.Password
-            );
+//             var user = users.FirstOrDefault(x =>
+//                 x.Email == body.Email && x.Password == body.Password
+//             );
 
-            if (user == null)
-                return await error("Email or password is incorrect");
+//             if (user == null)
+//                 return await error("Email or password is incorrect");
 
-            return await ok(
-                new
-                {
-                    Id = user.Id.ToString(),
-                    Email = user.Email,
-                    TokenLimit = user.TokenLimit,
-                    TokensUsed = user.TokensUsed,
-                    IsAdmin = user.IsAdmin,
-                    Token = "fake-jwt-token",
-                }
-            );
-        }
+//             return await ok(
+//                 new
+//                 {
+//                     Id = user.Id.ToString(),
+//                     Email = user.Email,
+//                     TokenLimit = user.TokenLimit,
+//                     TokensUsed = user.TokensUsed,
+//                     IsAdmin = user.IsAdmin,
+//                     Token = "fake-jwt-token",
+//                 }
+//             );
+//         }
 
-        async Task<HttpResponseMessage> register()
-        {
-            if (request.Content == null)
-            {
-                return await base.SendAsync(request, cancellationToken);
-            }
+//         async Task<HttpResponseMessage> register()
+//         {
+//             if (request.Content == null)
+//             {
+//                 return await base.SendAsync(request, cancellationToken);
+//             }
 
-            var bodyJson = await request.Content.ReadAsStringAsync(cancellationToken);
-            var body = JsonSerializer.Deserialize<Registration>(bodyJson);
+//             var bodyJson = await request.Content.ReadAsStringAsync(cancellationToken);
+//             var body = JsonSerializer.Deserialize<Registration>(bodyJson);
 
-            if (body == null)
-            {
-                return await base.SendAsync(request, cancellationToken);
-            }
+//             if (body == null)
+//             {
+//                 return await base.SendAsync(request, cancellationToken);
+//             }
 
-            if (users.Any(x => x.Email == body.Email))
-                return await error($"Email '{body.Email}' is already taken");
+//             if (users.Any(x => x.Email == body.Email))
+//                 return await error($"Email '{body.Email}' is already taken");
 
-            var user = new UserRecord
-            {
-                Id = users.Count > 0 ? users.Max(x => x.Id) + 1 : 1,
-                Email = body.Email,
-                Password = body.Password,
-            };
+//             var user = new UserRecord
+//             {
+//                 Id = users.Count > 0 ? users.Max(x => x.Id) + 1 : 1,
+//                 Email = body.Email,
+//                 Password = body.Password,
+//             };
 
-            users.Add(user);
+//             users.Add(user);
 
-            await _localStorageService.SetItem(usersKey, users);
+//             await _localStorageService.SetItem(usersKey, users);
 
-            return await ok();
-        }
+//             return await ok();
+//         }
 
-        async Task<HttpResponseMessage> getUsers()
-        {
-            if (!isLoggedIn())
-                return await unauthorized();
-            return await ok(users.Select(x => basicDetails(x)));
-        }
+//         async Task<HttpResponseMessage> getUsers()
+//         {
+//             if (!isLoggedIn())
+//                 return await unauthorized();
+//             return await ok(users.Select(x => basicDetails(x)));
+//         }
 
-        async Task<HttpResponseMessage> getUserById()
-        {
-            if (!isLoggedIn())
-                return await unauthorized();
+//         async Task<HttpResponseMessage> getUserById()
+//         {
+//             if (!isLoggedIn())
+//                 return await unauthorized();
 
-            var user = users.FirstOrDefault(x => x.Id == idFromPath());
+//             var user = users.FirstOrDefault(x => x.Id == idFromPath());
 
-            if (user == null)
-            {
-                return await base.SendAsync(request, cancellationToken);
-            }
+//             if (user == null)
+//             {
+//                 return await base.SendAsync(request, cancellationToken);
+//             }
 
-            return await ok(basicDetails(user));
-        }
+//             return await ok(basicDetails(user));
+//         }
 
-        async Task<HttpResponseMessage> deleteUser()
-        {
-            if (!isLoggedIn())
-                return await unauthorized();
+//         async Task<HttpResponseMessage> deleteUser()
+//         {
+//             if (!isLoggedIn())
+//                 return await unauthorized();
 
-            users.RemoveAll(x => x.Id == idFromPath());
-            await _localStorageService.SetItem(usersKey, users);
+//             users.RemoveAll(x => x.Id == idFromPath());
+//             await _localStorageService.SetItem(usersKey, users);
 
-            return await ok();
-        }
+//             return await ok();
+//         }
 
-        // helper functions
+//         // helper functions
 
-        async Task<HttpResponseMessage> ok(object? body = null)
-        {
-            return await jsonResponse(HttpStatusCode.OK, body ?? new { });
-        }
+//         async Task<HttpResponseMessage> ok(object? body = null)
+//         {
+//             return await jsonResponse(HttpStatusCode.OK, body ?? new { });
+//         }
 
-        async Task<HttpResponseMessage> error(string message)
-        {
-            return await jsonResponse(HttpStatusCode.BadRequest, new { message });
-        }
+//         async Task<HttpResponseMessage> error(string message)
+//         {
+//             return await jsonResponse(HttpStatusCode.BadRequest, new { message });
+//         }
 
-        async Task<HttpResponseMessage> unauthorized()
-        {
-            return await jsonResponse(
-                HttpStatusCode.Unauthorized,
-                new { message = "Unauthorized" }
-            );
-        }
+//         async Task<HttpResponseMessage> unauthorized()
+//         {
+//             return await jsonResponse(
+//                 HttpStatusCode.Unauthorized,
+//                 new { message = "Unauthorized" }
+//             );
+//         }
 
-        async Task<HttpResponseMessage> jsonResponse(HttpStatusCode statusCode, object content)
-        {
-            var response = new HttpResponseMessage
-            {
-                StatusCode = statusCode,
-                Content = new StringContent(
-                    JsonSerializer.Serialize(content),
-                    Encoding.UTF8,
-                    "application/json"
-                ),
-            };
+//         async Task<HttpResponseMessage> jsonResponse(HttpStatusCode statusCode, object content)
+//         {
+//             var response = new HttpResponseMessage
+//             {
+//                 StatusCode = statusCode,
+//                 Content = new StringContent(
+//                     JsonSerializer.Serialize(content),
+//                     Encoding.UTF8,
+//                     "application/json"
+//                 ),
+//             };
 
-            // delay to simulate real api call
-            await Task.Delay(500, cancellationToken);
+//             // delay to simulate real api call
+//             await Task.Delay(500, cancellationToken);
 
-            return response;
-        }
+//             return response;
+//         }
 
-        bool isLoggedIn()
-        {
-            return request.Headers.Authorization?.Parameter == "fake-jwt-token";
-        }
+//         bool isLoggedIn()
+//         {
+//             return request.Headers.Authorization?.Parameter == "fake-jwt-token";
+//         }
 
-        int idFromPath()
-        {
-            return int.Parse(path.Split('/').Last());
-        }
+//         int idFromPath()
+//         {
+//             return int.Parse(path.Split('/').Last());
+//         }
 
-        dynamic basicDetails(UserRecord user)
-        {
-            return new
-            {
-                Id = user.Id.ToString(),
-                Email = user.Email,
-                TokenLimit = user.TokenLimit,
-                TokensUsed = user.TokensUsed,
-                IsAdmin = user.IsAdmin,
-            };
-        }
-    }
-}
+//         dynamic basicDetails(UserRecord user)
+//         {
+//             return new
+//             {
+//                 Id = user.Id.ToString(),
+//                 Email = user.Email,
+//                 TokenLimit = user.TokenLimit,
+//                 TokensUsed = user.TokensUsed,
+//                 IsAdmin = user.IsAdmin,
+//             };
+//         }
+//     }
+// }
 
-// class for user records stored by fake backend
+// // class for user records stored by fake backend
 
-public class UserRecord
-{
-    public int Id { get; set; }
-    public int TokenLimit { get; set; }
-    public int TokensUsed { get; set; }
-    public bool IsAdmin { get; set; }
-    public required string Email { get; set; }
-    public required string Password { get; set; }
-}
+// public class UserRecord
+// {
+//     public int Id { get; set; }
+//     public int TokenLimit { get; set; }
+//     public int TokensUsed { get; set; }
+//     public bool IsAdmin { get; set; }
+//     public required string Email { get; set; }
+//     public required string Password { get; set; }
+// }

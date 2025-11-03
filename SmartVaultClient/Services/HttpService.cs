@@ -24,19 +24,16 @@ public class HttpService : IHttpService
 {
     private readonly HttpClient _httpClient;
     private readonly NavigationManager _navigationManager;
-    private readonly ILocalStorageService _localStorageService;
     private readonly IConfiguration _configuration;
 
     public HttpService(
         HttpClient httpClient,
         NavigationManager navigationManager,
-        ILocalStorageService localStorageService,
         IConfiguration configuration
     )
     {
         _httpClient = httpClient;
         _navigationManager = navigationManager;
-        _localStorageService = localStorageService;
         _configuration = configuration;
     }
 
@@ -102,7 +99,7 @@ public class HttpService : IHttpService
 
     private async Task SendRequest(HttpRequestMessage request)
     {
-        await addJwtHeader(request);
+        // await addJwtHeader(request);
 
         // send request
         using var response = await _httpClient.SendAsync(request);
@@ -119,7 +116,7 @@ public class HttpService : IHttpService
 
     private async Task<T> SendRequest<T>(HttpRequestMessage request)
     {
-        await addJwtHeader(request);
+        // await addJwtHeader(request);
 
         // send request
         using var response = await _httpClient.SendAsync(request);
@@ -139,14 +136,15 @@ public class HttpService : IHttpService
         return await response.Content.ReadFromJsonAsync<T>(options);
     }
 
-    private async Task addJwtHeader(HttpRequestMessage request)
-    {
-        // add jwt auth header if user is logged in
-        var user = await _localStorageService.GetItem<User>("user");
-        // var isApiUrl = request.RequestUri!.IsAbsoluteUri;
-        if (user != null)
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
-    }
+    // private async Task addJwtHeader(HttpRequestMessage request)
+    // {
+    //     // add jwt auth header if user is logged in
+    //     var user = await _localStorageService.GetItem<User>("user");
+    //     // var isApiUrl = request.RequestUri!.IsAbsoluteUri;
+    //     if (user != null)
+    //         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
+
+    // }
 
     private async Task handleErrors(HttpResponseMessage response)
     {
