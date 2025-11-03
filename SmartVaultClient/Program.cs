@@ -1,9 +1,4 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using SmartVaultClient.Helpers;
 using SmartVaultClient.Services;
 
 namespace SmartVaultClient;
@@ -18,8 +13,7 @@ public class Program
         builder
             .Services.AddScoped<IAccountService, AccountService>()
             .AddScoped<IAlertService, AlertService>()
-            .AddScoped<IHttpService, HttpService>()
-            .AddScoped<ILocalStorageService, LocalStorageService>();
+            .AddScoped<IHttpService, HttpService>();
 
         // configure http client
         builder.Services.AddScoped(x =>
@@ -27,13 +21,10 @@ public class Program
             var apiUrl = new Uri(builder.Configuration["apiUrl"]);
 
             // use fake backend if "fakeBackend" is "true" in appsettings.json
-            if (builder.Configuration["fakeBackend"] == "true")
-            {
-                var fakeBackendHandler = new FakeBackendHandler(
-                    x.GetService<ILocalStorageService>()
-                );
-                return new HttpClient(fakeBackendHandler) { BaseAddress = apiUrl };
-            }
+            // if (builder.Configuration["fakeBackend"] == "true")
+            // {
+            //     return new HttpClient(fakeBackendHandler) { BaseAddress = apiUrl };
+            // }
 
             return new HttpClient() { BaseAddress = apiUrl };
         });

@@ -16,34 +16,30 @@ public interface IAccountService
     Task Delete(string id);
 }
 
-public class AccountService(
-    IHttpService httpService,
-    NavigationManager navigationManager,
-    ILocalStorageService localStorageService
-) : IAccountService
+public class AccountService(IHttpService httpService, NavigationManager navigationManager)
+    : IAccountService
 {
     private readonly IHttpService _httpService = httpService;
     private readonly NavigationManager _navigationManager = navigationManager;
-    private readonly ILocalStorageService _localStorageService = localStorageService;
     private readonly string _userKey = "user";
 
     public User? User { get; private set; }
 
+    // don't cache anything in local storage
     public async Task Initialize()
     {
-        User = await _localStorageService.GetItem<User>(_userKey);
+        // get user from API, not from local storage
     }
 
+    // server won't send anything back on login, so we can't get the user information just from a log in
     public async Task Login(Login model)
     {
         User = await _httpService.Post<User>("/users/authenticate", model);
-        await _localStorageService.SetItem(_userKey, User);
     }
 
     public async Task Logout()
     {
-        User = null;
-        await _localStorageService.RemoveItem(_userKey);
+        User = null; // don't cache anything in local storage
         _navigationManager.NavigateTo("account/login");
     }
 
@@ -52,16 +48,19 @@ public class AccountService(
         await _httpService.Post("/users/register", model);
     }
 
+    // admin only
     public async Task<IList<User>> GetAll()
     {
         return await _httpService.Get<IList<User>>("/users");
     }
 
+    // id not needed, server already knows who's sending the request from the token
     public async Task<User> GetById(string id)
     {
         return await _httpService.Get<User>($"/users/{id}");
     }
 
+    // admin only
     public async Task Delete(string id)
     {
         await _httpService.Delete($"/users/{id}");
