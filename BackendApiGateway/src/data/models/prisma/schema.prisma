@@ -21,11 +21,15 @@ model User {
   isAdmin               Boolean @default(false)
   obsVaultMcpTokenLimit Int     @default(20) // added a default of 20 just in case not set programmatically
   obsVaultMcpTokensUsed Int     @default(0)
+
+  // one-to-one relation with RefreshTokenInfo
   refreshTokenInfo      RefreshTokenInfo?
 }
 
 model RefreshTokenInfo {
-  userId              String  @unique
+  // to log out (always logs out of all devices): increment refreshTokenVersion, invalidates the version of all previously issued refresh tokens for this user
   refreshTokenVersion Int     @default(1)
+
   user                User    @relation(fields: [userId], references: [id], onDelete: Cascade) // delete all session info for a user if their corresponding account is deleted 
+  userId              String  @unique
 }

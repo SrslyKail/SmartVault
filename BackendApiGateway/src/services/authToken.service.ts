@@ -1,15 +1,20 @@
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-import type { AccessTokenClaims, AuthTokens, RefreshTokenClaims, User } from "../types/index.ts";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+const { JsonWebTokenError, TokenExpiredError } = jwt;
+import type { AccessTokenClaims, AuthTokens, RefreshTokenClaims } from "../types/index.ts";
 import { HttpError } from "../errors/httpError.ts";
 import { HTTP_STATUS_CODES } from "../constants/httpResponse.ts";
 import { AUTH_ERRORS, HTTP_ERRORS } from "../lang/en.ts";
 import type { UserService } from "./user.service.ts";
+import { prisma } from "../data/db.ts";
+import type { RefreshTokenInfo, User } from "../data/models/generated/prisma/client.ts";
+import { logger } from "./logger.service.ts";
 
 export class AuthTokenService {
 
   private static readonly ACCESS_TOKEN_EXPIRY_TIME = "5min";
   private static readonly REFRESH_TOKEN_EXPIRY_TIME = "30d";
+
+  private static readonly JWT_TOKEN_EXPIRED_MSG = "jwt expired";
 
   private readonly userService: UserService;
 
@@ -19,22 +24,34 @@ export class AuthTokenService {
 
   /***
    * Creates an access token with applicable claims from the user, and a refresh token with a user id.
-   * The access token is short lived (minutes) and the refresh token is long (days).
+   * The access token is short lived (minutes) and the refresh token is long lived (days).
    * Access token is recreated on the next request that requires authentication (short lived) if the refresh token is not expired.
    * Refresh token preserves the user's login time period, and can be revoked when the user logs out.
    * Once all of the access tokens expire (on all devices that are signed in to the same account), the user is logged out.
    */
   public async createAuthTokens(user: User): Promise<AuthTokens> {
 
-    //TODO: get refresh token version from user refresh token db table
-    const userRefreshTokenVersion = 1;//await prismaClient.
+    // get refresh token version from refreshTokenInfo db table
+    const refreshTokenInfo: RefreshTokenInfo | null = await prisma.refreshTokenInfo.findUnique({
+      where: { userId: user.id }
+    });
+
+    if (!refreshTokenInfo) {
+      // should never get here if the User was created correctly and linked with RefreshTokenInfo
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.USER_NO_ASSOCIATED_REFRESH_TOKEN_INFO_ERROR);
+    }
+    
+    const { refreshTokenVersion } = refreshTokenInfo;
     
     const refreshTokenClaims: RefreshTokenClaims = {
       userId: user.id,
-      refreshTokenVersion: userRefreshTokenVersion
+      refreshTokenVersion: refreshTokenVersion
     };
 
-    // for both tokens - hash the header and payload using the refresh token signing secret key
+    // for both tokens 
+    // - hash the header and payload using the refresh token signing secret key to produce signature
+    // - combine header, payload, and signature
+    // - encode the token
     const refreshToken = jwt.sign(
       refreshTokenClaims,
       process.env.REFRESH_TOKEN_SECRET!,
@@ -46,8 +63,6 @@ export class AuthTokenService {
     );
 
     const accessToken = AuthTokenService.createNewAccessToken(user);
-
-    //TODO: store user id and the current refresh token version in db (UserRefreshToken table)
 
     return {
       accessToken: accessToken,
@@ -73,17 +88,16 @@ export class AuthTokenService {
   }> {
     const { accessToken, refreshToken } = authTokens;
 
-    // verify access token (the signature and token expiration)
     try {
 
-      // - parse the jwt token into header, paylaod, and token signature
+      // verify access token (the signature and token expiration)
+
+      // - parse the jwt token into header, payload, and token signature
       // - hash the header and payload using the token signing secret key
       // - if the hashed value from the header and payload values is equal to the token signature,
       //   then the jwt token is valid
 
-      const accessTokenClaims = <AccessTokenClaims>(
-        jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!)
-      );
+      const accessTokenClaims = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as AccessTokenClaims;
 
       // succesfully authenticated
       return {
@@ -93,30 +107,44 @@ export class AuthTokenService {
     }
     catch (error) {
       AuthTokenService.checkAndHandleJWTVerifyError(error);
+
+      // continue if access token has valid signature but is expired
     }
 
     // --- if access token expired ---
 
     // verify refresh token (the signature and token expiration)
     try {
-      const refreshTokenClaims = <RefreshTokenClaims>(
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!)
-      );
+      const refreshTokenClaims = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as RefreshTokenClaims;
 
       // check database to see if user is still allowed to be logged in
       const user = await this.userService.getUserById(refreshTokenClaims.userId);
-
+      
       if (!user) {
         // general unauthorized error (should never get here if request came from client app)
         throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_ERRORS.UNAUTHORIZED_ERROR);
       }
 
-      //TODO: get refresh token version from user refresh token db table
-      const userRefreshTokenVersion = 1;//await prismaClient.
+      // get refresh token version from refreshTokenInfo db table
+      const refreshTokenInfo: RefreshTokenInfo | null = await prisma.refreshTokenInfo.findUnique({
+        where: { userId: user.id }
+      });
 
-      // check if the refresh token version matches
+      if (!refreshTokenInfo) {
+        // should never get here if the User was created correctly and linked with RefreshTokenInfo
+        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.USER_NO_ASSOCIATED_REFRESH_TOKEN_INFO_ERROR);
+      }
+
+      const { refreshTokenVersion: dbRefreshTokenVersion } = refreshTokenInfo;
+
+      logger.info(`dbRefreshTokenVersion: ${dbRefreshTokenVersion}`);
+      logger.info(`jwtRefreshTokenVersion: ${refreshTokenClaims.refreshTokenVersion}`);
+
+      // compare with the refreshTokenVersion in the request's refresh token
+      // to check if the refresh token version matches
+      
       // if they don't match, the user's session has expired
-      if (userRefreshTokenVersion !== refreshTokenClaims.refreshTokenVersion) {
+      if (dbRefreshTokenVersion !== refreshTokenClaims.refreshTokenVersion) {
         throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.SESSION_EXPIRED_ERROR);
       }
 
@@ -148,9 +176,26 @@ export class AuthTokenService {
    * A device will only be signed out once its access token expires (a few minutes) 
    * Takes a few minutes for logout to take effect on all devices
    */
-  public async invalidateAllCurrentRefreshTokensWithUserId(userId: string) {
-    //TODO increment by 1 refreshTokenVersion (via set) after finding UserRefreshToken row with UserRefreshToken.userId == userId
-    // await prismaClient.set(refreshTokenVersion: refreshTokenVersion) where
+  public async invalidateAllCurrentRefreshTokensWithUserId(userId: string): Promise<void> {
+    
+    const foundUser: User | null = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!foundUser) {
+      throw new HttpError(HTTP_STATUS_CODES.NOT_FOUND, AUTH_ERRORS.USER_NOT_FOUND_WITH_ID_ERROR)
+    }
+  
+    // increment the current refresh token version in RefreshTokenInfo entity with matching userId, 
+    // which invalidates all refreshTokens associated with this user
+    await prisma.refreshTokenInfo.update({
+      where: { userId: foundUser.id },
+      data: {
+        refreshTokenVersion: {
+          increment: 1
+        }
+      }
+    });
   }
 
   // hashes the header and payload using the access token signing secret key
@@ -179,16 +224,33 @@ export class AuthTokenService {
   private static checkAndHandleJWTVerifyError(error: unknown) {
     // if any of these token errors occured - https://www.npmjs.com/package/jsonwebtoken#jsonwebtokenerror
     // notably invalid signature
-    if (error instanceof JsonWebTokenError) {
-      throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, error.message);
-    }
-    // if the jwt token expired (expected behaviour)
-    else if (error instanceof TokenExpiredError) {
-      return;
-    }
-    else {
+    if (!(error instanceof Error)) {
       throw new HttpError(HTTP_STATUS_CODES.SERVER_ERROR, HTTP_ERRORS.SERVER_ERROR);
     }
-  }
 
+    const errorMessage = error.message;
+
+    // if the jwt token expired but has valid signature (expected behaviour)
+    if (errorMessage === AuthTokenService.JWT_TOKEN_EXPIRED_MSG) {
+      return;
+    }
+    else if (error instanceof JsonWebTokenError) {
+      throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, error.message);
+    }
+    else {
+      logger.info(`auth jwt verify server error - ${error.message}`);
+      throw new HttpError(HTTP_STATUS_CODES.SERVER_ERROR, HTTP_ERRORS.SERVER_ERROR);
+    }
+
+    // if (error instanceof JsonWebTokenError) {
+    //   throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, error.message);
+    // }
+    // // if the jwt token expired but has valid signature (expected behaviour)
+    // else if (error instanceof TokenExpiredError) {
+    //   return;
+    // }
+    // else {
+    //   throw new HttpError(HTTP_STATUS_CODES.SERVER_ERROR, HTTP_ERRORS.SERVER_ERROR);
+    // }
+  }
 }

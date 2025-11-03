@@ -1,23 +1,5 @@
 import type { JwtPayload } from "jsonwebtoken";
-
-// todo: convert to prisma table
-export type User = {
-  id: string;
-  email: string;
-  hashedPassword: string;
-  isAdmin: boolean;
-  obsVaultMcpTokenLimit: number;
-  obsVaultMcpTokensUsed: number;
-};
-
-// todo: convert to prisma table
-// to log out (always logs out of all devices): increment refreshTokenVersion in UserRefreshToken row with userId == UserRefreshToken.userId
-export type UserRefreshToken = {
-  userId: string;
-  refreshTokenVersion: number; // default 1
-}
-
-// ------------------
+import type { User } from "../data/models/generated/prisma/client.ts";
 
 export type AuthTokens = {
   accessToken: string;
@@ -49,3 +31,5 @@ export type RefreshTokenClaims = JWTTokenStandardClaims & {
   userId: string;
   refreshTokenVersion: number // for invalidating refresh tokens for all logged in devices for a specific user when the user logs out
 };
+
+export type GetUserResponse = Omit<User, 'hashedPassword'>;

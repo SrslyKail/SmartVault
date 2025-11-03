@@ -5,7 +5,7 @@
 - Purpose: Whenever you make changes to your Prisma schema file, you also need to update the Prisma Client (contains Typescript types of the model schema, methods, etc). You can do this by running the prisma generate command.
 
 #### Create Migration
-`npx prisma migrate dev`
+`npx prisma migrate dev --name <migration_name>`
 
 - Purpose: This command generates and applies a new migration based on your Prisma schema changes. It creates migration files that keep a history of changes.
 - Use Case: Use this when you want to maintain a record of database changes, which is essential for production environments or when working in teams. It allows for version control of your database schema.

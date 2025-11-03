@@ -1,13 +1,15 @@
-import type { NextFunction, Request, Response } from 'express'
+import type { CookieOptions, NextFunction, Request, Response } from 'express'
 import type { AuthTokenService } from '../services/authToken.service.ts';
 import { HttpError } from '../errors/httpError.ts';
 import { logger } from '../services/logger.service.ts';
 import type { UserService } from '../services/user.service.ts';
-import type { AuthTokens, User } from '../types/index.ts';
+import type { AccessTokenClaims, AuthTokens } from '../types/index.ts';
 import { HTTP_STATUS_CODES } from '../constants/httpResponse.ts';
 import type { UserValidator } from '../validation/user/user.validator.ts';
-import { AUTH_ERRORS, AUTH_MESSAGES, HTTP_ERRORS } from '../lang/en.ts';
-import { ACCESS_TOKEN_COOKIE_KEY, REFRESH_TOKEN_COOKIE_KEY } from '../constants/cookieSettingsAndAuthTokens.ts';
+import { AUTH_ERRORS, AUTH_MESSAGES } from '../lang/en.ts';
+import type { User } from '../data/models/generated/prisma/client.ts';
+import { ACCESS_TOKEN_COOKIE_KEY, REFRESH_TOKEN_COOKIE_KEY } from '../constants/authTokens.ts';
+import { isProd } from '../constants/isProd.ts';
 
 export class AuthController {
 
@@ -40,7 +42,11 @@ export class AuthController {
 
       AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
 
-      res.status(HTTP_STATUS_CODES.OK).json(AUTH_MESSAGES.SUCCESSFUL_LOGIN);
+      const resData = {
+        message: AUTH_MESSAGES.SUCCESSFUL_LOGIN
+      }
+
+      res.status(HTTP_STATUS_CODES.OK).json(resData);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
@@ -57,12 +63,12 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      //todo: validate email and password
+      //todo: validate email and password using joi
       this.userValidator.tryValidateEmailAndPassword(email, password);
 
       const existingUser = await this.userService.findUserByEmail(email);
 
-      // if email already associated with an existing user
+      // if the email is already associated with an existing user
       if (existingUser) {
         throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMAIL_ALREADY_EXISTS_ERROR);
       }
@@ -77,7 +83,11 @@ export class AuthController {
 
       AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
 
-      res.status(HTTP_STATUS_CODES.CREATED).json(AUTH_MESSAGES.SUCCESSFUL_SIGNUP);
+      const resData = {
+        message: AUTH_MESSAGES.SUCCESSFUL_SIGNUP
+      }
+
+      res.status(HTTP_STATUS_CODES.CREATED).json(resData);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
@@ -90,31 +100,99 @@ export class AuthController {
     }
   }
 
+  /***
+   * Controller method for handling the checking of authenticated requests. 
+   * Call this as the first handler on every endpoint that requires auth
+   */
   public async authenticate(req: Request, res: Response, next: NextFunction) {
-    const reqAccessToken = req.cookies[ACCESS_TOKEN_COOKIE_KEY];
-    const reqRefreshToken = req.cookies[REFRESH_TOKEN_COOKIE_KEY];
 
-    if (!reqAccessToken || !reqRefreshToken) {
-      throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.MISSING_AUTH_TOKENS_ERROR);
+    try {
+      const reqAccessToken = req.cookies[ACCESS_TOKEN_COOKIE_KEY];
+      const reqRefreshToken = req.cookies[REFRESH_TOKEN_COOKIE_KEY];
+
+      if (!reqAccessToken || !reqRefreshToken) {
+        throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.MISSING_AUTH_TOKENS_ERROR);
+      }
+
+      const authTokens: AuthTokens = {
+        accessToken: reqAccessToken,
+        refreshToken: reqRefreshToken
+      };
+
+      const { claims, accessToken } = await this.authTokenService.checkAuthTokens(authTokens);
+
+      // Attach user data to the request object for use in subsequent request handlers
+      req.accessTokenClaims = claims;
+      req.accessToken = accessToken;
+
+      // go to next handler
+      next();
     }
+    catch (error) {
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error);
+      logger.error(
+        `code: ${code}, message: ${message}`
+      );
+      const resData = { message: message };
 
-    const authTokens: AuthTokens = {
-      accessToken: reqAccessToken,
-      refreshToken: reqRefreshToken
-    };
+      res.status(code).json(resData);
+    }
+  }
 
-    const { claims, accessToken } = await this.authTokenService.checkAuthTokens(authTokens);
+  public async logout(req: Request, res: Response): Promise<void> {
+    try {
+      const accessTokenClaims = AuthController.tryToExtractAccessTokenClaimsFromReq(req);
 
-    // Attach user data to the request object for use in subsequent request handlers
-    req.accessTokenClaims = claims; //todo
-    req.accessToken = accessToken;
+      const userId = accessTokenClaims.userId;
 
-    next();
+      await this.authTokenService.invalidateAllCurrentRefreshTokensWithUserId(userId);
+
+      const resData = {
+        message: AUTH_MESSAGES.SUCCESSFUL_LOGOUT
+      };
+
+      res.status(HTTP_STATUS_CODES.NO_CONTENT).json(resData);
+    }
+    catch (error) {
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error);
+      logger.error(
+        `code: ${code}, message: ${message}`
+      );
+      const resData = { message: message };
+
+      res.status(code).json(resData);
+    }
   }
 
   private static storeAuthTokensInHttpOnlyCookie(res: Response, authTokens: AuthTokens) {
+
+    const cookieOptions: CookieOptions = {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: "lax",
+      path: "/",
+      domain: isProd ? `.${process.env.DOMAIN}` : "",
+      maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+    };
+
     // Store the access token and refresh tokens in browser httpOnly cookie
     res.cookie(ACCESS_TOKEN_COOKIE_KEY, authTokens.accessToken, cookieOptions);
     res.cookie(REFRESH_TOKEN_COOKIE_KEY, authTokens.refreshToken, cookieOptions);
+  }
+
+  /***
+   * Extracts the accessTokenClaims field from the Express Request object.
+   * @throws HttpError if the req object does not contain accessTokenClaims
+   */
+  public static tryToExtractAccessTokenClaimsFromReq(req: Request): AccessTokenClaims {
+    const accessTokenClaims = req.accessTokenClaims;
+
+    if (!accessTokenClaims) {
+      // might need different error msg for if trying to log out with no active login 
+      // but this is fine for now
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.MISSING_AUTH_TOKENS_ERROR);
+    }
+
+    return accessTokenClaims;
   }
 }
