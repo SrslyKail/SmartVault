@@ -8,7 +8,7 @@ export class UserValidator {
   //todo: use joi schema evaluation instead
   public tryValidateEmailAndPassword(email: string, password: string) {
     if (!email) {
-      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMPTY_USERNAME_ERROR);
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMPTY_EMAIL_ERROR);
     }
     if (!password) {
       throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMPTY_PASSWORD_ERROR);

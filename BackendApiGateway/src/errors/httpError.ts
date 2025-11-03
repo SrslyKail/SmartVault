@@ -17,7 +17,7 @@ export class HttpError extends Error {
       logger.info(`${(error as any).message}`);
     }
     catch (loggingError) {
-      logger.info("An unkown error occured");
+      logger.info("An unknown error occured");
     }
 
     let errorCode = HTTP_STATUS_CODES.SERVER_ERROR;

@@ -1,0 +1,12 @@
+name: smart-vault-api-gateway
+
+services: 
+  auth-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: smart-vault-auth
+      POSTGRES_PASSWORD: verySecretPassword
+    ports: 
+      - 5432:5432

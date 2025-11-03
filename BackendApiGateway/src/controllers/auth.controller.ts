@@ -1,18 +1,20 @@
-import type { Request, Response } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 import type { AuthTokenService } from '../services/authToken.service.ts';
 import { HttpError } from '../errors/httpError.ts';
 import { logger } from '../services/logger.service.ts';
 import type { UserService } from '../services/user.service.ts';
-import type { User } from '../types/index.ts';
+import type { AuthTokens, User } from '../types/index.ts';
 import { HTTP_STATUS_CODES } from '../constants/httpResponse.ts';
 import type { UserValidator } from '../validation/user/user.validator.ts';
+import { AUTH_ERRORS, AUTH_MESSAGES, HTTP_ERRORS } from '../lang/en.ts';
+import { ACCESS_TOKEN_COOKIE_KEY, REFRESH_TOKEN_COOKIE_KEY } from '../constants/cookieSettingsAndAuthTokens.ts';
 
 export class AuthController {
 
   //jwt token generator and issuer
-  private authTokenService: AuthTokenService;
-  private userService:      UserService;
-  private userValidator:    UserValidator;
+  private readonly authTokenService: AuthTokenService;
+  private readonly userService:      UserService;
+  private readonly userValidator:    UserValidator;
 
   constructor(
     authTokenService: AuthTokenService,
@@ -26,24 +28,19 @@ export class AuthController {
 
   public async login(req: Request, res: Response) {
     try {
-
-      // console.log("recieved request");
-
       const { email, password, } = req.body;
       
       const user: User = await this.userService.tryFindUserByEmailAndPassword(email, password);
 
-      const jwtToken = "1234";//this.authTokenService.<>(user);
-
-      const resData = {
-        accessToken: jwtToken
-      }
+      const authTokens: AuthTokens = await this.authTokenService.createAuthTokens(user);
 
       logger.info(
         `User signed in with: ${user.id}, email: ${email}`
       );
 
-      res.status(HTTP_STATUS_CODES.OK).json(resData);
+      AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
+
+      res.status(HTTP_STATUS_CODES.OK).json(AUTH_MESSAGES.SUCCESSFUL_LOGIN);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
@@ -63,22 +60,24 @@ export class AuthController {
       //todo: validate email and password
       this.userValidator.tryValidateEmailAndPassword(email, password);
 
-      // check if user email already exists in db
-      this.userService.tryFindUserByEmailAndPassword(email, password);
-      
-      const user: User = await this.userService.createNewUser(email, password);
+      const existingUser = await this.userService.findUserByEmail(email);
 
-      const jwtToken = "1234";//this.authTokenService.<>(user);
-
-      const resData = {
-        accessToken: jwtToken
+      // if email already associated with an existing user
+      if (existingUser) {
+        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMAIL_ALREADY_EXISTS_ERROR);
       }
+      
+      const newUser: User = await this.userService.createNewUser(email, password);
+
+      const authTokens: AuthTokens = await this.authTokenService.createAuthTokens(newUser);
 
       logger.info(
-        `User created with id: ${user.id}, email: ${user.email}, hashed password: ${user.hashedPassword}`
+        `User created with id: ${newUser.id}, email: ${newUser.email}, hashed password: ${newUser.hashedPassword}`
       );
 
-      res.status(HTTP_STATUS_CODES.CREATED).json(resData);
+      AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
+
+      res.status(HTTP_STATUS_CODES.CREATED).json(AUTH_MESSAGES.SUCCESSFUL_SIGNUP);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
@@ -91,7 +90,31 @@ export class AuthController {
     }
   }
 
-  public authenticate(req: Request, res: Response) {
+  public async authenticate(req: Request, res: Response, next: NextFunction) {
+    const reqAccessToken = req.cookies[ACCESS_TOKEN_COOKIE_KEY];
+    const reqRefreshToken = req.cookies[REFRESH_TOKEN_COOKIE_KEY];
 
+    if (!reqAccessToken || !reqRefreshToken) {
+      throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.MISSING_AUTH_TOKENS_ERROR);
+    }
+
+    const authTokens: AuthTokens = {
+      accessToken: reqAccessToken,
+      refreshToken: reqRefreshToken
+    };
+
+    const { claims, accessToken } = await this.authTokenService.checkAuthTokens(authTokens);
+
+    // Attach user data to the request object for use in subsequent request handlers
+    req.accessTokenClaims = claims; //todo
+    req.accessToken = accessToken;
+
+    next();
+  }
+
+  private static storeAuthTokensInHttpOnlyCookie(res: Response, authTokens: AuthTokens) {
+    // Store the access token and refresh tokens in browser httpOnly cookie
+    res.cookie(ACCESS_TOKEN_COOKIE_KEY, authTokens.accessToken, cookieOptions);
+    res.cookie(REFRESH_TOKEN_COOKIE_KEY, authTokens.refreshToken, cookieOptions);
   }
 }
