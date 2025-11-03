@@ -68,17 +68,17 @@ public class FakeBackendHandler(ILocalStorageService localStorageService) : Http
             }
 
             var user = users.FirstOrDefault(x =>
-                x.Username == body.Username && x.Password == body.Password
+                x.Email == body.Email && x.Password == body.Password
             );
 
             if (user == null)
-                return await error("Username or password is incorrect");
+                return await error("Email or password is incorrect");
 
             return await ok(
                 new
                 {
                     Id = user.Id.ToString(),
-                    Username = user.Username,
+                    Email = user.Email,
                     TokenLimit = user.TokenLimit,
                     TokensUsed = user.TokensUsed,
                     IsAdmin = user.IsAdmin,
@@ -102,13 +102,13 @@ public class FakeBackendHandler(ILocalStorageService localStorageService) : Http
                 return await base.SendAsync(request, cancellationToken);
             }
 
-            if (users.Any(x => x.Username == body.Username))
-                return await error($"Username '{body.Username}' is already taken");
+            if (users.Any(x => x.Email == body.Email))
+                return await error($"Email '{body.Email}' is already taken");
 
             var user = new UserRecord
             {
                 Id = users.Count > 0 ? users.Max(x => x.Id) + 1 : 1,
-                Username = body.Username,
+                Email = body.Email,
                 Password = body.Password,
             };
 
@@ -205,7 +205,7 @@ public class FakeBackendHandler(ILocalStorageService localStorageService) : Http
             return new
             {
                 Id = user.Id.ToString(),
-                Username = user.Username,
+                Email = user.Email,
                 TokenLimit = user.TokenLimit,
                 TokensUsed = user.TokensUsed,
                 IsAdmin = user.IsAdmin,
@@ -222,6 +222,6 @@ public class UserRecord
     public int TokenLimit { get; set; }
     public int TokensUsed { get; set; }
     public bool IsAdmin { get; set; }
-    public required string Username { get; set; }
+    public required string Email { get; set; }
     public required string Password { get; set; }
 }
