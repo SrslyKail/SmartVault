@@ -22,4 +22,4 @@ RUN npm install --omit=dev
 
 COPY --from=builder /app/src ./src
 
-CMD ["npm", "start"]
+ENTRYPOINT ["npm", "start"]
