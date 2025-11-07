@@ -38,8 +38,8 @@ export class UsersController {
       // remove the hashed password from the user response
       const userResDto: GetUserResponse = {
         id: user.id,
-        email: user?.email,
-        isAdmin: user?.isAdmin,
+        email: user.email,
+        isAdmin: user.isAdmin,
         obsVaultMcpTokenLimit: user.obsVaultMcpTokenLimit,
         obsVaultMcpTokensUsed: user.obsVaultMcpTokensUsed,
       }

@@ -151,7 +151,7 @@ export class AuthController {
         message: AUTH_MESSAGES.SUCCESSFUL_LOGOUT
       };
 
-      res.status(HTTP_STATUS_CODES.NO_CONTENT).json(resData);
+      res.status(HTTP_STATUS_CODES.OK).json(resData);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
@@ -171,7 +171,7 @@ export class AuthController {
       secure: isProd,
       sameSite: "lax",
       path: "/",
-      domain: isProd ? `.${process.env.DOMAIN}` : "",
+      domain: isProd ? `.${process.env.DOMAIN}` : "", //TODO
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
     };
 

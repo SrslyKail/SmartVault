@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-const { JsonWebTokenError, TokenExpiredError } = jwt;
+const { JsonWebTokenError } = jwt;
 import type { AccessTokenClaims, AuthTokens, RefreshTokenClaims } from "../types/index.ts";
 import { HttpError } from "../errors/httpError.ts";
 import { HTTP_STATUS_CODES } from "../constants/httpResponse.ts";
@@ -11,8 +11,11 @@ import { logger } from "./logger.service.ts";
 
 export class AuthTokenService {
 
-  private static readonly ACCESS_TOKEN_EXPIRY_TIME = "5min";
-  private static readonly REFRESH_TOKEN_EXPIRY_TIME = "30d";
+  public static readonly  ACCESS_TOKEN_EXPIRY_TIME_MINS   = 5;
+  public static readonly  ACCESS_TOKEN_EXPIRY_TIME_UNITS  = "minutes";
+
+  private static readonly ACCESS_TOKEN_EXPIRY_TIME_JWT_FORMATTED  = "5min";
+  private static readonly REFRESH_TOKEN_EXPIRY_TIME_JWT_FORMATTED = "30d";
 
   private static readonly JWT_TOKEN_EXPIRED_MSG = "jwt expired";
 
@@ -58,7 +61,7 @@ export class AuthTokenService {
       {
         issuer: process.env.API_GATEWAY_ISSUER,
         audience: process.env.API_GATEWAY_AUDIENCE,
-        expiresIn: AuthTokenService.REFRESH_TOKEN_EXPIRY_TIME,
+        expiresIn: AuthTokenService.REFRESH_TOKEN_EXPIRY_TIME_JWT_FORMATTED,
       }
     );
 
@@ -89,7 +92,6 @@ export class AuthTokenService {
     const { accessToken, refreshToken } = authTokens;
 
     try {
-
       // verify access token (the signature and token expiration)
 
       // - parse the jwt token into header, payload, and token signature
@@ -114,58 +116,63 @@ export class AuthTokenService {
     // --- if access token expired ---
 
     // verify refresh token (the signature and token expiration)
+
+    let refreshTokenClaims: RefreshTokenClaims;
+
     try {
-      const refreshTokenClaims = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as RefreshTokenClaims;
-
-      // check database to see if user is still allowed to be logged in
-      const user = await this.userService.getUserById(refreshTokenClaims.userId);
-      
-      if (!user) {
-        // general unauthorized error (should never get here if request came from client app)
-        throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_ERRORS.UNAUTHORIZED_ERROR);
-      }
-
-      // get refresh token version from refreshTokenInfo db table
-      const refreshTokenInfo: RefreshTokenInfo | null = await prisma.refreshTokenInfo.findUnique({
-        where: { userId: user.id }
-      });
-
-      if (!refreshTokenInfo) {
-        // should never get here if the User was created correctly and linked with RefreshTokenInfo
-        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.USER_NO_ASSOCIATED_REFRESH_TOKEN_INFO_ERROR);
-      }
-
-      const { refreshTokenVersion: dbRefreshTokenVersion } = refreshTokenInfo;
-
-      logger.info(`dbRefreshTokenVersion: ${dbRefreshTokenVersion}`);
-      logger.info(`jwtRefreshTokenVersion: ${refreshTokenClaims.refreshTokenVersion}`);
-
-      // compare with the refreshTokenVersion in the request's refresh token
-      // to check if the refresh token version matches
-      
-      // if they don't match, the user's session has expired
-      if (dbRefreshTokenVersion !== refreshTokenClaims.refreshTokenVersion) {
-        throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.SESSION_EXPIRED_ERROR);
-      }
-
-      // create a new access token
-      const newAccessToken = AuthTokenService.createNewAccessToken(user);
-
-      const newAccessTokenClaims: AccessTokenClaims = {
-        userId: user.id,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        obsVaultMcpTokenLimit: user.obsVaultMcpTokenLimit,
-      };
-
-      return {
-        claims: newAccessTokenClaims,
-        accessToken: newAccessToken
-      }
+      refreshTokenClaims = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as RefreshTokenClaims;
     }
     catch (error) {
       AuthTokenService.checkAndHandleJWTVerifyError(error);
+
+      // --- user login session has expired (refresh token expired) ---
+
       throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.SESSION_EXPIRED_ERROR);
+    }
+
+    // check database to see if user is still allowed to be logged in
+    const user = await this.userService.getUserById(refreshTokenClaims.userId);
+    
+    if (!user) {
+      // general unauthorized error (should never get here if user account and refresh token were created/issued by this server)
+      throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, HTTP_ERRORS.UNAUTHORIZED_ERROR);
+    }
+
+    // get refresh token version from refreshTokenInfo db table
+    const refreshTokenInfo: RefreshTokenInfo | null = await prisma.refreshTokenInfo.findUnique({
+      where: { userId: user.id }
+    });
+
+    if (!refreshTokenInfo) {
+      // should never get here if the User was created correctly and linked with RefreshTokenInfo
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.USER_NO_ASSOCIATED_REFRESH_TOKEN_INFO_ERROR);
+    }
+
+    const { refreshTokenVersion: dbRefreshTokenVersion } = refreshTokenInfo;
+
+    logger.info(`dbRefreshTokenVersion: ${dbRefreshTokenVersion}`);
+    logger.info(`jwtRefreshTokenVersion: ${refreshTokenClaims.refreshTokenVersion}`);
+
+    // compare the db refreshTokenVersion with the request refreshTokenVersion to check if the versions match
+    
+    // if they don't match, the user's session has expired (they logged out before their refresh token expired)
+    if (dbRefreshTokenVersion !== refreshTokenClaims.refreshTokenVersion) {
+      throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, AUTH_ERRORS.SESSION_EXPIRED_ERROR);
+    }
+
+    // create a new access token
+    const newAccessToken = AuthTokenService.createNewAccessToken(user);
+
+    const newAccessTokenClaims: AccessTokenClaims = {
+      userId: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      obsVaultMcpTokenLimit: user.obsVaultMcpTokenLimit,
+    };
+
+    return {
+      claims: newAccessTokenClaims,
+      accessToken: newAccessToken
     }
   }
 
@@ -214,7 +221,7 @@ export class AuthTokenService {
       {
         issuer: process.env.API_GATEWAY_ISSUER,
         audience: process.env.API_GATEWAY_AUDIENCE,
-        expiresIn: AuthTokenService.ACCESS_TOKEN_EXPIRY_TIME,
+        expiresIn: AuthTokenService.ACCESS_TOKEN_EXPIRY_TIME_JWT_FORMATTED,
       }
     );
 
@@ -222,8 +229,7 @@ export class AuthTokenService {
   }
 
   private static checkAndHandleJWTVerifyError(error: unknown) {
-    // if any of these token errors occured - https://www.npmjs.com/package/jsonwebtoken#jsonwebtokenerror
-    // notably invalid signature
+
     if (!(error instanceof Error)) {
       throw new HttpError(HTTP_STATUS_CODES.SERVER_ERROR, HTTP_ERRORS.SERVER_ERROR);
     }
@@ -234,11 +240,13 @@ export class AuthTokenService {
     if (errorMessage === AuthTokenService.JWT_TOKEN_EXPIRED_MSG) {
       return;
     }
+    // if any of these token errors occured - https://www.npmjs.com/package/jsonwebtoken#jsonwebtokenerror
+    // notably invalid signature
     else if (error instanceof JsonWebTokenError) {
       throw new HttpError(HTTP_STATUS_CODES.UNAUTHORIZED, error.message);
     }
     else {
-      logger.info(`auth jwt verify server error - ${error.message}`);
+      logger.info(`internal server error while attempting to verify jwt - ${error.message}`);
       throw new HttpError(HTTP_STATUS_CODES.SERVER_ERROR, HTTP_ERRORS.SERVER_ERROR);
     }
 

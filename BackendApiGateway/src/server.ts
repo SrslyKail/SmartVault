@@ -1,18 +1,38 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from 'express'
-import type { Request, Response } from 'express'
+// import type { Request, Response } from 'express'
 import { authController, usersController } from './serverDependencies.ts';
-import { HTTP_STATUS_CODES } from './constants/httpResponse.ts';
+// import { HTTP_STATUS_CODES } from './constants/httpResponse.ts';
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
 const port = process.env.PORT || 8000;
 const app = express();
 
+const allowedOrigin = process.env.ALLOWED_ORIGIN;
+
+if (!allowedOrigin) {
+  throw new Error("ALLOWED_ORIGIN not set to env variable");
+}
+
+// adds the included headers allow origin and allow credentials in the res object
+const corsHandler = cors({
+  origin: allowedOrigin,  // Access-Control-Allow-Origin header value (string of the required origin)
+  credentials: true,      // Access-Control-Allow-Credentials header value (boolean value representing if credentials like cookies can be sent)
+});
+
+// use cors middleware for all routes and methods (done for every request)
+// ensure that all requests must include the correct headers
+app.use(corsHandler); // Access-Control-Allow-Methods - ALL http methods
+
+// handle browser initiated options request for preflight request type - for ALL routes 
+// using named wildcard parameter to satisfy Express 5
+app.options("/{*path}", corsHandler);
+
 // Parse incoming requests into json
 app.use(express.json());
 
-// no secret key
 app.use(cookieParser());
 
 // const getHelloMsg = (req: Request, res: Response) => {

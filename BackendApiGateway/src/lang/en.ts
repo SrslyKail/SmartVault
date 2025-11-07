@@ -1,3 +1,5 @@
+import { AuthTokenService } from "../services/authToken.service.ts";
+
 export const HTTP_ERRORS = {
   SERVER_ERROR:             "An internal server error occured",
   RESOURCE_NOT_FOUND_ERROR: "The requested resource was not found",
@@ -23,5 +25,5 @@ export const AUTH_ERRORS = {
 export const AUTH_MESSAGES = {
   SUCCESSFUL_LOGIN: "Successfully logged in",
   SUCCESSFUL_SIGNUP: "Successfully signed up",
-  SUCCESSFUL_LOGOUT: "Successfully logged out"
+  SUCCESSFUL_LOGOUT: `Successfully logged out. Please wait ${AuthTokenService.ACCESS_TOKEN_EXPIRY_TIME_MINS} ${AuthTokenService.ACCESS_TOKEN_EXPIRY_TIME_UNITS} for this to take effect`
 }
