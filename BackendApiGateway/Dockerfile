@@ -21,6 +21,9 @@ COPY package*.json ./
 
 RUN npm install --omit=dev
 
+RUN npx prisma migrate deploy
+RUN npx prisma generate
+
 EXPOSE 8000
 
 # COPY --from=builder /app/src ./src
