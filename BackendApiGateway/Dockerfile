@@ -1,25 +1,27 @@
-# Stage 1: Build stage
-FROM node:22-alpine AS builder
+# # Stage 1: Build stage
+# FROM node:22-alpine AS builder
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY package*.json ./
+# COPY package*.json ./
 
-RUN npm install
+# RUN npm install
 
-EXPOSE 8000
+# EXPOSE 8000
 
-COPY . .
+# COPY . .
 
 # Stage 2: Production stage
 FROM node:22-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
+# COPY --from=builder /app/package*.json ./
 
 RUN npm install --omit=dev
 
-COPY --from=builder /app/src ./src
+EXPOSE 8000
+
+# COPY --from=builder /app/src ./src
 
 ENTRYPOINT ["npm", "start"]
