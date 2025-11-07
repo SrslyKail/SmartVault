@@ -16,16 +16,11 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-# COPY --from=builder /app/package*.json ./
-
-RUN npm install --omit=dev
-
-RUN npx prisma migrate deploy
-RUN npx prisma generate
+COPY package.json ./
+RUN npm i
+COPY prisma.config.ts ./
+COPY . .
 
 EXPOSE 8000
+CMD ["sh", "-c", "npm run db:deploy && npm run dev"]
 
-# COPY --from=builder /app/src ./src
-
-ENTRYPOINT ["npm", "start"]

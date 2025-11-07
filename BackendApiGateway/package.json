@@ -6,7 +6,8 @@
     "dev": "npx tsc && node src/server.ts",
     "build": "tsc",
     "start": "npm run build && node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
   },
   "type": "module",
   "author": "",
