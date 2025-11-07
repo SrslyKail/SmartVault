@@ -10,6 +10,16 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports: 
       - ${POSTGRES_PORT}:5432
+  backend-api:
+    build:
+      context: .
+    environment:
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      API_GATEWAY_ISSUER: ${API_GATEWAY_ISSUER}
+      API_GATEWAY_AUDIENCE: ${API_GATEWAY_AUDIENCE}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
 #     volumes:
 #       - auth-db-data:/var/lib/postgresql/data
 # volumes:
