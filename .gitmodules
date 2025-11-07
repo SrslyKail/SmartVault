@@ -1,0 +1,3 @@
+[submodule "BackendApiGatewayRepo"]
+	path = BackendApiGatewayRepo
+	url = https://github.com/jpg157/SmartVault-Backend.git
