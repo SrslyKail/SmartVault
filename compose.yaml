@@ -1,8 +1,6 @@
 name: SmartVault
-services:
-  frontend:
-    build:
-      context: ./SmartVaultClient
-      dockerfile: client.Dockerfile
-    ports: 
-      - 9000:80
+include:
+  - path:
+    - ./BackendApiGateway/docker-compose.yml
+  - path:
+    - ./SmartVaultClient/docker-compose.yml
