@@ -35,6 +35,8 @@ services:
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
       DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - ${BACKEND_API_PORT}:8000
     depends_on:
       auth-db:
         condition: service_healthy

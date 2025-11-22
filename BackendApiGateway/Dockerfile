@@ -11,7 +11,22 @@
 
 # COPY . .
 
-# Stage 2: Production stage
+# # === Development ===
+# FROM node:22-alpine AS development
+
+# WORKDIR /app
+
+# COPY package.json ./
+# RUN npm i
+# COPY prisma.config.ts ./
+# COPY . .
+
+# EXPOSE 8000
+# # CMD ["sh", "-c", "npm run db:deploy && npm run dev"]
+# CMD ["sh", "-c", "npm run db:deploy && npm run build && npm run start"]
+
+
+# === Production ===
 FROM node:22-alpine
 
 WORKDIR /app
@@ -23,6 +38,4 @@ COPY . .
 
 EXPOSE 8000
 # CMD ["sh", "-c", "npm run db:deploy && npm run dev"]
-CMD ["sh", "-c", "npm run db:deploy && npm run"]
-
-
+CMD ["sh", "-c", "npm run db:deploy && npm run build && npm run start"]

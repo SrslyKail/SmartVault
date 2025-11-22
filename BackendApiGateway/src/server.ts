@@ -7,7 +7,7 @@ import { authController, usersController } from './serverDependencies.ts';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 
-const port = process.env.PORT || 8000;
+const port = process.env.BACKEND_API_PORT || 8000;
 const app = express();
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN;
