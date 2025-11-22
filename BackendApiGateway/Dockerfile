@@ -36,6 +36,6 @@ RUN npm i
 COPY prisma.config.ts ./
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8001
 # CMD ["sh", "-c", "npm run db:deploy && npm run dev"]
 CMD ["sh", "-c", "npm run db:deploy && npm run build && npm run start"]
