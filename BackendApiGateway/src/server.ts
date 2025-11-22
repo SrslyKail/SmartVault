@@ -7,7 +7,7 @@ import { authController, usersController } from './serverDependencies.ts';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 
-const port = process.env.BACKEND_API_PORT || 8000;
+const port = process.env.BACKEND_API_PORT || 8001;
 const app = express();
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN;
@@ -45,4 +45,4 @@ app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(authController));
 
-app.listen(port, () => console.log("App is listening on port 8000 - http://localhost:8000"));
+app.listen(port, () => console.log(`App is listening on port 8000 - http://localhost:${port}`));
