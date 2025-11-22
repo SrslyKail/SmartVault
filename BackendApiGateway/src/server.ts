@@ -45,4 +45,4 @@ app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(authController));
 
-app.listen(port, () => console.log(`App is listening on port 8000 - http://localhost:${port}`));
+app.listen(port, () => console.log(`App is listening on port ${port} - http://localhost:${port}`));
