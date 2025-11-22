@@ -1,27 +1,30 @@
 name: smart-vault-api-gateway
 
-services: 
+services:
   auth-db:
     image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      # PGUSER: ${POSTGRES_USER}
-      # POSTGRES_USER: ${POSTGRES_USER}
-      # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
+      interval: 5s
+      timeout: 2s
+      retries: 20
       start_period: 80s
-    ports: 
+    ports:
       - ${POSTGRES_PORT}:5432
+    # volumes:
+    #   - postgres_data:/var/lib/postgresql/data
+    # networks:
+    #   - prisma-network
     command: postgres -c listen_addresses='*'
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "3"
+    # logging:
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
   backend-api:
     build:
       context: .
@@ -32,11 +35,16 @@ services:
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
       DATABASE_URL: ${DATABASE_URL}
-    depends_on: 
+    depends_on:
       auth-db:
         condition: service_healthy
         restart: true
+    # networks:
+    #   - prisma-network
     # volumes:
     #   - auth-db-data:/var/lib/postgresql/data
 # volumes:
-  # auth-db-data:
+#   postgres_data:
+
+# networks:
+#   prisma-network:
