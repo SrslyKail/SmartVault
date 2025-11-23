@@ -35,7 +35,8 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
     // server won't send anything back on login, so we can't get the user information just from a log in
     public async Task Login(Login model)
     {
-        User = await _httpService.Post<User>("/api/auth/login", model);
+        var test = await _httpService.Post<User>("/api/auth/login", model);
+        Console.WriteLine(test);
     }
 
     public async Task Logout()

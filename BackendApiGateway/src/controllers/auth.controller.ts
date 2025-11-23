@@ -83,7 +83,7 @@ export class AuthController {
         `User created with id: ${newUser.id}, email: ${newUser.email}, hashed password: ${newUser.hashedPassword}`
       );
 
-      AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
+      // AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
 
       const resData = {
         message: AUTH_MESSAGES.SUCCESSFUL_SIGNUP

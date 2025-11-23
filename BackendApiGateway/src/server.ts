@@ -46,7 +46,7 @@ app.use(uncapitalizeReqBodyProperties);
 
 // app.get("/", getHelloMsg);
 app.post("/api/auth/login", authController.login.bind(authController));
-app.post("api/auth/signup/", authController.signup.bind(authController));
+app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(authController));
 
