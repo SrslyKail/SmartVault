@@ -8,9 +8,9 @@ public interface IAccountService
 {
     User? User { get; }
     Task Initialize();
-    Task Login(Login model);
+    Task Login(LoginRequestDTO model);
     Task Logout();
-    Task Register(Registration model);
+    Task Register(RegistrationRequestDTO model);
     Task<IList<User>> GetAll();
     Task<User> GetById(string id);
     Task Delete(string id);
@@ -33,10 +33,9 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
     }
 
     // server won't send anything back on login, so we can't get the user information just from a log in
-    public async Task Login(Login model)
+    public async Task Login(LoginRequestDTO model)
     {
-        var test = await _httpService.Post<User>("/api/auth/login", model);
-        Console.WriteLine(test);
+        await _httpService.Post<RegistrationResponseDTO>("/api/auth/login", model);
     }
 
     public async Task Logout()
@@ -45,7 +44,7 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
         _navigationManager.NavigateTo("/api/auth/logout");
     }
 
-    public async Task Register(Registration model)
+    public async Task Register(RegistrationRequestDTO model)
     {
         await _httpService.Post("/api/auth/signup", model);
     }

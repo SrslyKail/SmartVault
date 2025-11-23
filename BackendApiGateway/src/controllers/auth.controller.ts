@@ -173,7 +173,8 @@ export class AuthController {
       secure: isProd,
       sameSite: "lax",
       path: "/",
-      domain: isProd ? `.${process.env.DOMAIN}` : "", //TODO
+      // domain: isProd ? `.${process.env.DOMAIN}` : "",
+      ...(isProd && process.env.DOMAIN ? { domain: `.${process.env.DOMAIN}` } : {}),
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
     };
 

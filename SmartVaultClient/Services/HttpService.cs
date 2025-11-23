@@ -6,6 +6,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using SmartVaultClient.Helpers;
 using SmartVaultClient.Models;
+using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 namespace SmartVaultClient.Services;
 
@@ -117,6 +118,8 @@ public class HttpService : IHttpService
     private async Task<T> SendRequest<T>(HttpRequestMessage request)
     {
         // await addJwtHeader(request);
+
+        request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
 
         // send request
         using var response = await _httpClient.SendAsync(request);

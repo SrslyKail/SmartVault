@@ -19,7 +19,7 @@ if (!allowedOrigin) {
 
 // adds the included headers allow origin and allow credentials in the res object
 const corsHandler = cors({
-  origin: allowedOrigin,  // Access-Control-Allow-Origin header value (string of the required origin)
+  origin: allowedOrigin,  // Access-Control-Allow-Origin header value (string of the required origin) 
   credentials: true,      // Access-Control-Allow-Credentials header value (boolean value representing if credentials like cookies can be sent)
 });
 
@@ -48,6 +48,6 @@ app.use(uncapitalizeReqBodyProperties);
 app.post("/api/auth/login", authController.login.bind(authController));
 app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
-app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(authController));
+app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(usersController));
 
 app.listen(port, () => console.log(`App is listening on port ${port} - http://localhost:${port}`));

@@ -11,10 +11,10 @@ public class User
     public int TokensUsed { get; set; }
     public bool IsAdmin { get; set; }
 
-    /// <summary>
-    /// Token used for JWT authentication.
-    /// </summary>
-    public string? Token { get; set; }
+    // /// <summary>
+    // /// Token used for JWT authentication.
+    // /// </summary>
+    // public string? Token { get; set; }
 
     /// <summary>
     /// Just used to show a loading bar when deleting a user.
