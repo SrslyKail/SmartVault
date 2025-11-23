@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace SmartVaultClient.Models.Account;
 
 /// <summary>
-/// Data model for a registration form.
+/// Request DTO model for signup endpoint.
 /// </summary>
-public class Registration
+public class RegistrationRequestDTO
 {
     [Required]
     [EmailAddress]
@@ -14,4 +14,14 @@ public class Registration
     [Required]
     [MinLength(6, ErrorMessage = "Passwords must have 6 characters or more")]
     public string Password { get; set; } = "";
+}
+
+
+/// <summary>
+/// Response DTO model for signup endpoint.
+/// </summary>
+public class RegistrationResponseDTO
+{
+    [Required]
+    public string Message { get; set; } = "";
 }

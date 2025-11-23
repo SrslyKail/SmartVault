@@ -31,6 +31,8 @@ export class AuthController {
   public async login(req: Request, res: Response) {
     try {
       const { email, password, } = req.body;
+
+      //TODO: add login validation here
       
       const user: User = await this.userService.tryFindUserByEmailAndPassword(email, password);
 
@@ -81,7 +83,7 @@ export class AuthController {
         `User created with id: ${newUser.id}, email: ${newUser.email}, hashed password: ${newUser.hashedPassword}`
       );
 
-      AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
+      // AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
 
       const resData = {
         message: AUTH_MESSAGES.SUCCESSFUL_SIGNUP
@@ -171,7 +173,8 @@ export class AuthController {
       secure: isProd,
       sameSite: "lax",
       path: "/",
-      domain: isProd ? `.${process.env.DOMAIN}` : "", //TODO
+      // domain: isProd ? `.${process.env.DOMAIN}` : "",
+      ...(isProd && process.env.DOMAIN ? { domain: `.${process.env.DOMAIN}` } : {}),
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
     };
 

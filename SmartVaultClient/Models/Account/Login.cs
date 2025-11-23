@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace SmartVaultClient.Models.Account;
 
 /// <summary>
-/// Data model for a login form.
+/// Request DTO model for login endpoint.
 /// </summary>
-public class Login
+public class LoginRequestDTO
 {
     [Required]
     [EmailAddress]
@@ -13,4 +13,13 @@ public class Login
 
     [Required]
     public string Password { get; set; } = "";
+}
+
+/// <summary>
+/// Response DTO model for login endpoint.
+/// </summary>
+public class LoginResponseDTO
+{
+    [Required]
+    public string Message { get; set; } = "";
 }
