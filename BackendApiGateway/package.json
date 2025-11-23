@@ -23,8 +23,10 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@microsoft/signalr": "^10.0.0",
     "@prisma/client": "^6.18.0",
     "@types/cookie-parser": "^1.4.10",
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
