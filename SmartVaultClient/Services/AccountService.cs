@@ -29,23 +29,30 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
     public async Task Initialize()
     {
         // get user from API, not from local storage
+        User = await GetCurrentUser();
     }
 
     // server won't send anything back on login, so we can't get the user information just from a log in
     public async Task Login(Login model)
     {
-        User = await _httpService.Post<User>("/users/authenticate", model);
+        User = await _httpService.Post<User>("/api/auth/login", model);
     }
 
     public async Task Logout()
     {
         User = null; // don't cache anything in local storage
-        _navigationManager.NavigateTo("account/login");
+        _navigationManager.NavigateTo("/api/auth/logout");
     }
 
     public async Task Register(Registration model)
     {
-        await _httpService.Post("/users/register", model);
+        await _httpService.Post("/api/auth/signup", model);
+    }
+
+    public async Task<User> GetCurrentUser()
+    {
+        User = await _httpService.Get<User>("/api/auth/me"); // todo: ensure cookies are in header
+        return User;
     }
 
     // admin only

@@ -14,4 +14,10 @@ public class Registration
     [Required]
     [MinLength(6, ErrorMessage = "Passwords must have 6 characters or more")]
     public string Password { get; set; } = "";
+
+    public override string ToString()
+    {
+        var strReturn = $"Email: {Email}\nPassword: {Password}";
+        return strReturn;
+    }
 }

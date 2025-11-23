@@ -87,6 +87,7 @@ public class HttpService : IHttpService
         object? value = null
     )
     {
+        Console.WriteLine(value?.ToString());
         var request = new HttpRequestMessage(method, uri);
         if (value != null)
             request.Content = new StringContent(

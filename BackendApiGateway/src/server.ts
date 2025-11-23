@@ -6,6 +6,7 @@ import { authController, usersController } from './serverDependencies.ts';
 // import { HTTP_STATUS_CODES } from './constants/httpResponse.ts';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
+import { uncapitalizeReqBodyProperties } from "./middleware/index.ts";
 
 const port = process.env.BACKEND_API_PORT || 8001;
 const app = express();
@@ -30,10 +31,14 @@ app.use(corsHandler); // Access-Control-Allow-Methods - ALL http methods
 // using named wildcard parameter to satisfy Express 5
 app.options("/{*path}", corsHandler);
 
+// Parse cookies from incoming request
+app.use(cookieParser());
+
 // Parse incoming requests into json
 app.use(express.json());
 
-app.use(cookieParser());
+// Uncapitalize all properties from the request body (asp.net core models require fields to be capitalized)
+app.use(uncapitalizeReqBodyProperties);
 
 // const getHelloMsg = (req: Request, res: Response) => {
 //   res.status(HTTP_STATUS_CODES.OK).send("Hello World");
@@ -41,7 +46,7 @@ app.use(cookieParser());
 
 // app.get("/", getHelloMsg);
 app.post("/api/auth/login", authController.login.bind(authController));
-app.post("/api/auth/signup", authController.signup.bind(authController));
+app.post("api/auth/signup/", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(authController));
 

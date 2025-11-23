@@ -18,7 +18,9 @@ public class Program
         // configure http client
         builder.Services.AddScoped(x =>
         {
-            var apiUrl = new Uri(builder.Configuration["apiUrl"]);
+            var apiUrl = new Uri(
+                builder.Configuration["apiUrl"] ?? throw new Exception("apiUrl not set in appsettings.json file")
+            );
 
             // use fake backend if "fakeBackend" is "true" in appsettings.json
             // if (builder.Configuration["fakeBackend"] == "true")

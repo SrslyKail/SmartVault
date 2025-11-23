@@ -31,6 +31,8 @@ export class AuthController {
   public async login(req: Request, res: Response) {
     try {
       const { email, password, } = req.body;
+
+      //TODO: add login validation here
       
       const user: User = await this.userService.tryFindUserByEmailAndPassword(email, password);
 
