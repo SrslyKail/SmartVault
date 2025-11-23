@@ -1,6 +1,17 @@
 name: smart-vault-api-gateway
 
 services:
+  adminer-auth-db-visualizer:
+    image: adminer
+    profiles:
+      - development # only create this container if in develompent profile
+    restart: always
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    ports:
+      - 8080
+
   auth-db:
     image: postgres:latest
     restart: always
@@ -25,6 +36,7 @@ services:
     #   options:
     #     max-size: "10m"
     #     max-file: "3"
+  
   backend-api:
     build:
       context: .

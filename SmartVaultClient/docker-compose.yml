@@ -1,4 +1,4 @@
-name: "SmartVault"
+name: smart-vault-client
 services:
   frontend:
     build:
