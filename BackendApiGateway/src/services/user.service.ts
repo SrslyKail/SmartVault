@@ -63,6 +63,19 @@ export class UserService {
     return user;
   }
 
+  public async getAllUsersAndTheirApiCallTotals() {
+    const users = await prisma.user.findMany({      
+      omit: {
+        hashedPassword: true,
+      },
+      include: {
+        userApiServiceUsage: true
+      },
+    });
+
+    return users;
+  }
+
   public async findUserByEmail(userEmail: string): Promise<User | null> {
     // find by unique email
     const user: User | null = await prisma.user.findUnique({

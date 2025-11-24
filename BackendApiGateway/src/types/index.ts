@@ -32,7 +32,7 @@ export type RefreshTokenClaims = JWTTokenStandardClaims & {
   refreshTokenVersion: number // for invalidating refresh tokens for all logged in devices for a specific user when the user logs out
 };
 
-export type GetUserResponse = Omit<User, 'hashedPassword'>;
+export type GetUserResponseDTO = Omit<User, 'hashedPassword'>;
 
 // only id is required, the rest are optional
 export type UpdateUserRequestDTO = Omit<

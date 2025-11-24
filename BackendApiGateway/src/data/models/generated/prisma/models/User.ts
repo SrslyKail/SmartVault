@@ -217,7 +217,7 @@ export type UserWhereInput = {
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFilter<"User"> | number
   refreshTokenInfo?: Prisma.XOR<Prisma.RefreshTokenInfoNullableScalarRelationFilter, Prisma.RefreshTokenInfoWhereInput> | null
-  UserApiUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
+  userApiServiceUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -227,7 +227,7 @@ export type UserOrderByWithRelationInput = {
   userType?: Prisma.SortOrder
   apiServiceCallLimit?: Prisma.SortOrder
   refreshTokenInfo?: Prisma.RefreshTokenInfoOrderByWithRelationInput
-  UserApiUsage?: Prisma.UserApiServiceUsageOrderByWithRelationInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -240,7 +240,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFilter<"User"> | number
   refreshTokenInfo?: Prisma.XOR<Prisma.RefreshTokenInfoNullableScalarRelationFilter, Prisma.RefreshTokenInfoWhereInput> | null
-  UserApiUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
+  userApiServiceUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
 }, "id" | "email" | "hashedPassword">
 
 export type UserOrderByWithAggregationInput = {
@@ -274,7 +274,7 @@ export type UserCreateInput = {
   userType?: $Enums.UserType
   apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoCreateNestedOneWithoutUserInput
-  UserApiUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -284,7 +284,7 @@ export type UserUncheckedCreateInput = {
   userType?: $Enums.UserType
   apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedCreateNestedOneWithoutUserInput
-  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -294,7 +294,7 @@ export type UserUpdateInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUpdateOneWithoutUserNestedInput
-  UserApiUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -304,7 +304,7 @@ export type UserUncheckedUpdateInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedUpdateOneWithoutUserNestedInput
-  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -398,18 +398,18 @@ export type UserUpdateOneRequiredWithoutRefreshTokenInfoNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokenInfoInput, Prisma.UserUpdateWithoutRefreshTokenInfoInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokenInfoInput>
 }
 
-export type UserCreateNestedOneWithoutUserApiUsageInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserApiUsageInput
+export type UserCreateNestedOneWithoutUserApiServiceUsageInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserApiServiceUsageInput, Prisma.UserUncheckedCreateWithoutUserApiServiceUsageInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserApiServiceUsageInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutUserApiUsageNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserApiUsageInput
-  upsert?: Prisma.UserUpsertWithoutUserApiUsageInput
+export type UserUpdateOneRequiredWithoutUserApiServiceUsageNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserApiServiceUsageInput, Prisma.UserUncheckedCreateWithoutUserApiServiceUsageInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserApiServiceUsageInput
+  upsert?: Prisma.UserUpsertWithoutUserApiServiceUsageInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserApiUsageInput, Prisma.UserUpdateWithoutUserApiUsageInput>, Prisma.UserUncheckedUpdateWithoutUserApiUsageInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserApiServiceUsageInput, Prisma.UserUpdateWithoutUserApiServiceUsageInput>, Prisma.UserUncheckedUpdateWithoutUserApiServiceUsageInput>
 }
 
 export type UserCreateWithoutRefreshTokenInfoInput = {
@@ -418,7 +418,7 @@ export type UserCreateWithoutRefreshTokenInfoInput = {
   hashedPassword: string
   userType?: $Enums.UserType
   apiServiceCallLimit?: number
-  UserApiUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokenInfoInput = {
@@ -427,7 +427,7 @@ export type UserUncheckedCreateWithoutRefreshTokenInfoInput = {
   hashedPassword: string
   userType?: $Enums.UserType
   apiServiceCallLimit?: number
-  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokenInfoInput = {
@@ -452,7 +452,7 @@ export type UserUpdateWithoutRefreshTokenInfoInput = {
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  UserApiUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokenInfoInput = {
@@ -461,10 +461,10 @@ export type UserUncheckedUpdateWithoutRefreshTokenInfoInput = {
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
+  userApiServiceUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
 }
 
-export type UserCreateWithoutUserApiUsageInput = {
+export type UserCreateWithoutUserApiServiceUsageInput = {
   id?: string
   email: string
   hashedPassword: string
@@ -473,7 +473,7 @@ export type UserCreateWithoutUserApiUsageInput = {
   refreshTokenInfo?: Prisma.RefreshTokenInfoCreateNestedOneWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutUserApiUsageInput = {
+export type UserUncheckedCreateWithoutUserApiServiceUsageInput = {
   id?: string
   email: string
   hashedPassword: string
@@ -482,23 +482,23 @@ export type UserUncheckedCreateWithoutUserApiUsageInput = {
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedCreateNestedOneWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutUserApiUsageInput = {
+export type UserCreateOrConnectWithoutUserApiServiceUsageInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserApiServiceUsageInput, Prisma.UserUncheckedCreateWithoutUserApiServiceUsageInput>
 }
 
-export type UserUpsertWithoutUserApiUsageInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutUserApiUsageInput, Prisma.UserUncheckedUpdateWithoutUserApiUsageInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
+export type UserUpsertWithoutUserApiServiceUsageInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserApiServiceUsageInput, Prisma.UserUncheckedUpdateWithoutUserApiServiceUsageInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserApiServiceUsageInput, Prisma.UserUncheckedCreateWithoutUserApiServiceUsageInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutUserApiUsageInput = {
+export type UserUpdateToOneWithWhereWithoutUserApiServiceUsageInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutUserApiUsageInput, Prisma.UserUncheckedUpdateWithoutUserApiUsageInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserApiServiceUsageInput, Prisma.UserUncheckedUpdateWithoutUserApiServiceUsageInput>
 }
 
-export type UserUpdateWithoutUserApiUsageInput = {
+export type UserUpdateWithoutUserApiServiceUsageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
@@ -507,7 +507,7 @@ export type UserUpdateWithoutUserApiUsageInput = {
   refreshTokenInfo?: Prisma.RefreshTokenInfoUpdateOneWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutUserApiUsageInput = {
+export type UserUncheckedUpdateWithoutUserApiServiceUsageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
@@ -525,7 +525,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userType?: boolean
   apiServiceCallLimit?: boolean
   refreshTokenInfo?: boolean | Prisma.User$refreshTokenInfoArgs<ExtArgs>
-  UserApiUsage?: boolean | Prisma.User$UserApiUsageArgs<ExtArgs>
+  userApiServiceUsage?: boolean | Prisma.User$userApiServiceUsageArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -555,7 +555,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "hashedPassword" | "userType" | "apiServiceCallLimit", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refreshTokenInfo?: boolean | Prisma.User$refreshTokenInfoArgs<ExtArgs>
-  UserApiUsage?: boolean | Prisma.User$UserApiUsageArgs<ExtArgs>
+  userApiServiceUsage?: boolean | Prisma.User$userApiServiceUsageArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -564,7 +564,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     refreshTokenInfo: Prisma.$RefreshTokenInfoPayload<ExtArgs> | null
-    UserApiUsage: Prisma.$UserApiServiceUsagePayload<ExtArgs> | null
+    userApiServiceUsage: Prisma.$UserApiServiceUsagePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -967,7 +967,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   refreshTokenInfo<T extends Prisma.User$refreshTokenInfoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokenInfoArgs<ExtArgs>>): Prisma.Prisma__RefreshTokenInfoClient<runtime.Types.Result.GetResult<Prisma.$RefreshTokenInfoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  UserApiUsage<T extends Prisma.User$UserApiUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$UserApiUsageArgs<ExtArgs>>): Prisma.Prisma__UserApiServiceUsageClient<runtime.Types.Result.GetResult<Prisma.$UserApiServiceUsagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  userApiServiceUsage<T extends Prisma.User$userApiServiceUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userApiServiceUsageArgs<ExtArgs>>): Prisma.Prisma__UserApiServiceUsageClient<runtime.Types.Result.GetResult<Prisma.$UserApiServiceUsagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1409,9 +1409,9 @@ export type User$refreshTokenInfoArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * User.UserApiUsage
+ * User.userApiServiceUsage
  */
-export type User$UserApiUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$userApiServiceUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserApiServiceUsage
    */
