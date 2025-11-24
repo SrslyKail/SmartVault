@@ -171,6 +171,13 @@ app.get("/api-doc", swaggerUi.setup(swaggerSpec));
  *        schema:
  *          type: integer
  *          format: int64
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: integer
+ *          format: int64
  *    requestBody:
  *      required: true
  *      content:
@@ -215,7 +222,13 @@ app.patch("/api/admin/users/:id",
  *        schema:
  *          type: integer
  *          format: int64
- *        
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: integer
+ *          format: int64
  *  responses:
  *    200:
  *      description: The user has been deleted
@@ -227,6 +240,35 @@ app.delete("/api/admin/users/:id",
 );
 
 // === Obsidian Vault MCP endpoints (currently limited to 20 for all users) ===
+/**
+ * @openapi
+ * /api/obs-vault/chat:
+ *  delete:
+ *    summary: Send a message to the LLM. Consumes tokens.
+ *    parameters:
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: integer
+ *          format: int64
+ *    requestBody:
+ *      required: true
+ *      content:
+ *       application/json:
+ *          schema: 
+ *            type: object
+ *            properties:
+ *              prompt:
+ *                type: string
+ *                description: the prompt for the LLM
+ *            required:
+ *              - prompt
+ *  responses:
+ *    200:
+ *      description: The user has been deleted
+ */
 app.post("/api/obs-vault/chat", authController.authenticate.bind(authController), obsVaultController.createPromptAndGetResponse.bind(obsVaultController));
 
 app.listen(port, () => console.log(`App is listening on port ${port} - http://localhost:${port}`));
