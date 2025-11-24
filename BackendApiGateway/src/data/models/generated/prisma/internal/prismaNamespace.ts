@@ -391,7 +391,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  RefreshTokenInfo: 'RefreshTokenInfo'
+  RefreshTokenInfo: 'RefreshTokenInfo',
+  UserApiServiceUsage: 'UserApiServiceUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshTokenInfo"
+    modelProps: "user" | "refreshTokenInfo" | "userApiServiceUsage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -559,6 +560,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UserApiServiceUsage: {
+      payload: Prisma.$UserApiServiceUsagePayload<ExtArgs>
+      fields: Prisma.UserApiServiceUsageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserApiServiceUsageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserApiServiceUsageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>
+        }
+        findFirst: {
+          args: Prisma.UserApiServiceUsageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserApiServiceUsageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>
+        }
+        findMany: {
+          args: Prisma.UserApiServiceUsageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>[]
+        }
+        create: {
+          args: Prisma.UserApiServiceUsageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>
+        }
+        createMany: {
+          args: Prisma.UserApiServiceUsageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserApiServiceUsageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>[]
+        }
+        delete: {
+          args: Prisma.UserApiServiceUsageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>
+        }
+        update: {
+          args: Prisma.UserApiServiceUsageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>
+        }
+        deleteMany: {
+          args: Prisma.UserApiServiceUsageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserApiServiceUsageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserApiServiceUsageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>[]
+        }
+        upsert: {
+          args: Prisma.UserApiServiceUsageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserApiServiceUsagePayload>
+        }
+        aggregate: {
+          args: Prisma.UserApiServiceUsageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserApiServiceUsage>
+        }
+        groupBy: {
+          args: Prisma.UserApiServiceUsageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserApiServiceUsageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserApiServiceUsageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserApiServiceUsageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -603,8 +678,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   hashedPassword: 'hashedPassword',
   isAdmin: 'isAdmin',
-  obsVaultMcpTokenLimit: 'obsVaultMcpTokenLimit',
-  obsVaultMcpTokensUsed: 'obsVaultMcpTokensUsed'
+  apiServiceCallLimit: 'apiServiceCallLimit'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -616,6 +690,14 @@ export const RefreshTokenInfoScalarFieldEnum = {
 } as const
 
 export type RefreshTokenInfoScalarFieldEnum = (typeof RefreshTokenInfoScalarFieldEnum)[keyof typeof RefreshTokenInfoScalarFieldEnum]
+
+
+export const UserApiServiceUsageScalarFieldEnum = {
+  totalNumApiCallsMade: 'totalNumApiCallsMade',
+  userId: 'userId'
+} as const
+
+export type UserApiServiceUsageScalarFieldEnum = (typeof UserApiServiceUsageScalarFieldEnum)[keyof typeof UserApiServiceUsageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -777,6 +859,7 @@ export interface PrismaClientOptions {
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   refreshTokenInfo?: Prisma.RefreshTokenInfoOmit
+  userApiServiceUsage?: Prisma.UserApiServiceUsageOmit
 }
 
 /* Types for Logging */

@@ -3,17 +3,23 @@ import { HttpError } from "../errors/httpError.ts";
 import { AUTH_ERRORS } from "../lang/en.ts";
 import bcrypt from "bcrypt";
 import { logger } from "./logger.service.ts";
-import { ObsidianVaultMCPService } from "./obsidianVaultMCP.service.ts";
-import type { User } from "../data/models/generated/prisma/client.ts";
+import type { User, UserApiServiceUsage } from "../data/models/generated/prisma/client.ts";
 import { prisma } from "../data/db.ts";
 import { APICallLimiter } from "../lib/apiCallLimit.ts";
+import type { UserApiUsageService } from "./userApiUsageService.service.ts";
 
 export class UserService {
 
   private static readonly NUM_SALT_ROUNDS = 10;
   private static readonly DEFAULT_USER_ADMIN_STATUS = false;
 
-  constructor() {}
+  private readonly userApiUsageService: UserApiUsageService;
+
+  constructor(
+    userApiUsageService: UserApiUsageService
+  ) {
+    this.userApiUsageService = userApiUsageService;
+  }
 
   public async createNewUser(email: string, password: string): Promise<User> {
 
@@ -24,8 +30,7 @@ export class UserService {
         email: email,
         hashedPassword: hashedPassword,
         isAdmin: UserService.DEFAULT_USER_ADMIN_STATUS,
-        obsVaultMcpTokenLimit: APICallLimiter.SERVICE_API_CALL_LIMIT_ALL_USERS,
-        obsVaultMcpTokensUsed: APICallLimiter.INITIAL_NUM_SERVICE_API_CALLS,
+        apiServiceCallLimit: APICallLimiter.SERVICE_API_CALL_LIMIT_ALL_USERS,
         
         // nested create to link a new refreshTokenInfo entity to the user entity by user id
         refreshTokenInfo: {
@@ -33,6 +38,8 @@ export class UserService {
         }
       }
     });
+
+    await this.userApiUsageService.createNewUserApiUsageEntry(newUser.id);
 
     logger.info(`Created new user: ${newUser.email} ${newUser.isAdmin}`);
 

@@ -167,7 +167,7 @@ export class AuthTokenService {
       userId: user.id,
       email: user.email,
       isAdmin: user.isAdmin,
-      obsVaultMcpTokenLimit: user.obsVaultMcpTokenLimit,
+      apiServiceCallLimit: user.apiServiceCallLimit,
     };
 
     return {
@@ -212,7 +212,7 @@ export class AuthTokenService {
       userId:     user.id,
       email:      user.email,
       isAdmin:    user.isAdmin,
-      obsVaultMcpTokenLimit: user.obsVaultMcpTokenLimit,
+      apiServiceCallLimit: user.apiServiceCallLimit,
     };
 
     const accessToken = jwt.sign(

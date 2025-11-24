@@ -24,7 +24,7 @@ export type AccessTokenClaims = JWTTokenStandardClaims & {
   userId: string;
   email: string;
   isAdmin: boolean;
-  obsVaultMcpTokenLimit: number;
+  apiServiceCallLimit: number;
 };
 
 export type RefreshTokenClaims = JWTTokenStandardClaims & {

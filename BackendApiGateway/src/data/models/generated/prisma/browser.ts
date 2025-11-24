@@ -27,3 +27,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type RefreshTokenInfo = Prisma.RefreshTokenInfoModel
+/**
+ * Model UserApiServiceUsage
+ * 
+ */
+export type UserApiServiceUsage = Prisma.UserApiServiceUsageModel

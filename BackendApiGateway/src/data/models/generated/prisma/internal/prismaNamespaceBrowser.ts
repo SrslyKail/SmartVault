@@ -50,7 +50,8 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 export const ModelName = {
   User: 'User',
-  RefreshTokenInfo: 'RefreshTokenInfo'
+  RefreshTokenInfo: 'RefreshTokenInfo',
+  UserApiServiceUsage: 'UserApiServiceUsage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,8 +75,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   hashedPassword: 'hashedPassword',
   isAdmin: 'isAdmin',
-  obsVaultMcpTokenLimit: 'obsVaultMcpTokenLimit',
-  obsVaultMcpTokensUsed: 'obsVaultMcpTokensUsed'
+  apiServiceCallLimit: 'apiServiceCallLimit'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -87,6 +87,14 @@ export const RefreshTokenInfoScalarFieldEnum = {
 } as const
 
 export type RefreshTokenInfoScalarFieldEnum = (typeof RefreshTokenInfoScalarFieldEnum)[keyof typeof RefreshTokenInfoScalarFieldEnum]
+
+
+export const UserApiServiceUsageScalarFieldEnum = {
+  totalNumApiCallsMade: 'totalNumApiCallsMade',
+  userId: 'userId'
+} as const
+
+export type UserApiServiceUsageScalarFieldEnum = (typeof UserApiServiceUsageScalarFieldEnum)[keyof typeof UserApiServiceUsageScalarFieldEnum]
 
 
 export const SortOrder = {

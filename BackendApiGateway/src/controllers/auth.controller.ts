@@ -28,6 +28,9 @@ export class AuthController {
     this.userValidator    = userValidator;
   }
 
+  /**
+   * Endpoint handler for user login.
+   */
   public async login(req: Request, res: Response) {
     try {
       const { email, password, } = req.body;
@@ -61,6 +64,12 @@ export class AuthController {
     }
   }
 
+  /**
+   * Endpoint handler for user signup.
+   * 
+   * **Does not create and set auth tokens from signup endpoint. 
+   * The user has to login afterwards (confirms that they are in the system)**
+   */
   public async signup(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
@@ -77,13 +86,9 @@ export class AuthController {
       
       const newUser: User = await this.userService.createNewUser(email, password);
 
-      const authTokens: AuthTokens = await this.authTokenService.createAuthTokens(newUser);
-
       logger.info(
         `User created with id: ${newUser.id}, email: ${newUser.email}, hashed password: ${newUser.hashedPassword}`
       );
-
-      // AuthController.storeAuthTokensInHttpOnlyCookie(res, authTokens);
 
       const resData = {
         message: AUTH_MESSAGES.SUCCESSFUL_SIGNUP
@@ -166,6 +171,7 @@ export class AuthController {
     }
   }
 
+  // Stores both an access token and a refresh token in browser httpOnly cookie
   private static storeAuthTokensInHttpOnlyCookie(res: Response, authTokens: AuthTokens) {
 
     const cookieOptions: CookieOptions = {

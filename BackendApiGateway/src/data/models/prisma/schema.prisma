@@ -19,17 +19,24 @@ model User {
   email                 String  @unique
   hashedPassword        String  @unique // users can't have the same password
   isAdmin               Boolean @default(false)
-  obsVaultMcpTokenLimit Int     @default(20) // added a default of 20 just in case not set programmatically
-  obsVaultMcpTokensUsed Int     @default(0)
+  apiServiceCallLimit   Int     @default(20) // added a default of 20 just in case not set programmatically
 
   // one-to-one relation with RefreshTokenInfo
   refreshTokenInfo      RefreshTokenInfo?
+
+  // one-to-one relation with UserApiUsage
+  UserApiUsage          UserApiServiceUsage?
 }
 
 model RefreshTokenInfo {
   // to log out (always logs out of all devices): increment refreshTokenVersion, invalidates the version of all previously issued refresh tokens for this user
   refreshTokenVersion Int     @default(1)
-
   user                User    @relation(fields: [userId], references: [id], onDelete: Cascade) // delete all session info for a user if their corresponding account is deleted 
+  userId              String  @unique
+}
+
+model UserApiServiceUsage {
+  totalNumApiCallsMade Int @default(0)
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade) 
   userId              String  @unique
 }
