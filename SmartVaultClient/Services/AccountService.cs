@@ -11,8 +11,8 @@ public interface IAccountService
     Task Login(LoginRequestDTO model);
     Task Logout();
     Task Register(RegistrationRequestDTO model);
-    Task<IList<User>> GetAll();
-    Task<User> GetById(string id);
+    Task<IList<User>?> GetAll();
+    Task<User?> GetById(string id);
     Task Delete(string id);
 }
 
@@ -53,20 +53,20 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
         await _httpService.Post("/api/auth/signup", model);
     }
 
-    public async Task<User> GetCurrentUser()
+    public async Task<User?> GetCurrentUser()
     {
         User = await _httpService.Get<User>("/api/auth/me"); // todo: ensure cookies are in header
         return User;
     }
 
     // admin only
-    public async Task<IList<User>> GetAll()
+    public async Task<IList<User>?> GetAll()
     {
         return await _httpService.Get<IList<User>>("/users");
     }
 
     // id not needed, server already knows who's sending the request from the token
-    public async Task<User> GetById(string id)
+    public async Task<User?> GetById(string id)
     {
         return await _httpService.Get<User>($"/users/{id}");
     }
