@@ -6,8 +6,8 @@ import { authController, obsVaultController, usersController } from './serverDep
 // import { HTTP_STATUS_CODES } from './constants/httpResponse.ts';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
-import { McpChatHub } from "./middleware/mcpChatHub.ts"
-import { uncapitalizeReqBodyProperties } from "./middleware/index.ts";
+// import { McpChatHub } from "./middleware/mcpChatHub.ts"
+import { uncapitalizeReqBodyProperties } from "./middleware/uncapitalizeProps.ts";
 
 const port = process.env.BACKEND_API_PORT || 8001;
 const app = express();
@@ -46,10 +46,14 @@ app.use(uncapitalizeReqBodyProperties);
 // }
 
 // app.get("/", getHelloMsg);
+
+// === Auth endpoints ===
 app.post("/api/auth/login", authController.login.bind(authController));
 app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(usersController));
-app.post("/api/obs-vault/chat", authController.authenticate.bind(authController), obsVaultController.createNewPrompt.bind(obsVaultController));
+
+// === Service endpoints (currently limited to 20 for all users) ===
+app.post("/api/obs-vault/chat", authController.authenticate.bind(authController), obsVaultController.createPromptAndGetResponse.bind(obsVaultController));
 
 app.listen(port, () => console.log(`App is listening on port ${port} - http://localhost:${port}`));

@@ -46,7 +46,7 @@ export class AuthController {
 
       const resData = {
         message: AUTH_MESSAGES.SUCCESSFUL_LOGIN
-      }
+      };
 
       res.status(HTTP_STATUS_CODES.OK).json(resData);
     }

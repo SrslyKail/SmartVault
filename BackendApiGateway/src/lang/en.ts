@@ -27,3 +27,11 @@ export const AUTH_MESSAGES = {
   SUCCESSFUL_SIGNUP: "Successfully signed up",
   SUCCESSFUL_LOGOUT: `Successfully logged out. Please wait ${AuthTokenService.ACCESS_TOKEN_EXPIRY_TIME_MINS} ${AuthTokenService.ACCESS_TOKEN_EXPIRY_TIME_UNITS} for this to take effect`
 }
+
+export const OBS_MCP_PROMPT_ERRORS = {
+  EMPTY_PROMPT_ERROR: "Please enter a non-empty prompt",
+};
+
+export const API_CALL_LIMIT_MESSAGES = {
+  EXCEEDED_LIMIT_WARNING: "Warning: you have reached your service request limit. But you can continue using these services."
+};

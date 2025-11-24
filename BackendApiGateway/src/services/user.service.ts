@@ -6,6 +6,7 @@ import { logger } from "./logger.service.ts";
 import { ObsidianVaultMCPService } from "./obsidianVaultMCP.service.ts";
 import type { User } from "../data/models/generated/prisma/client.ts";
 import { prisma } from "../data/db.ts";
+import { APICallLimiter } from "../lib/apiCallLimit.ts";
 
 export class UserService {
 
@@ -23,8 +24,8 @@ export class UserService {
         email: email,
         hashedPassword: hashedPassword,
         isAdmin: UserService.DEFAULT_USER_ADMIN_STATUS,
-        obsVaultMcpTokenLimit: ObsidianVaultMCPService.SERVICE_API_CALL_LIMIT_REGULAR_USER,
-        obsVaultMcpTokensUsed: ObsidianVaultMCPService.INITIAL_NUM_SERVICE_API_CALLS,
+        obsVaultMcpTokenLimit: APICallLimiter.SERVICE_API_CALL_LIMIT_ALL_USERS,
+        obsVaultMcpTokensUsed: APICallLimiter.INITIAL_NUM_SERVICE_API_CALLS,
         
         // nested create to link a new refreshTokenInfo entity to the user entity by user id
         refreshTokenInfo: {
@@ -44,8 +45,6 @@ export class UserService {
        where: { id: userId }
     });
 
-    
-    
     return user;
   }
 

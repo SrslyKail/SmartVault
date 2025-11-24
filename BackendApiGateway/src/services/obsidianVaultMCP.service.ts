@@ -1,31 +1,39 @@
 import axios from 'axios'
-import * as signalR from "@microsoft/signalr";
-//todo: store obsVaultMcpTokensUsed in redis storage with the userId for faster access 
-
-//todo: check current num tokens used on every request to obsidian vault service
-// obsVaultMcpTokensUsed: number;
+import { HttpError } from '../errors/httpError.ts';
+// import * as signalR from "@microsoft/signalr";
 
 export class ObsidianVaultMCPService {
-  public static readonly SERVICE_API_CALL_LIMIT_REGULAR_USER = 20;
-  public static readonly INITIAL_NUM_SERVICE_API_CALLS = 0;
-  // private readonly MCP_URL = process.env.OBSIDIAN_MCP_SERVER
-  
-  public async getBotResponse(prompt: string) {
+
+  // The key in axios response data for request error
+  private static readonly ERROR_MESSAGE_KEY: string = "title";
+
+  public constructor() {}
+
+  public async createPromptAndGetResponse(prompt: string) {
+
+    // TODO: check if tokens used has exceeded the maximum amount, if so, add rate limit warning to response but continue to provide services
+
+    const chatEndpointUrl = `${process.env.OBSIDIAN_MCP_SERVER_DOMAIN!}/Chat`;
 
     try {
-      const mcpResponse: string = await axios.post(process.env.OBSIDIAN_MCP_SERVER!,
-        { message: prompt }
+      const obsMcpPromptResponse = await axios.post(chatEndpointUrl,
+        prompt,
+        {
+          headers: {
+            "Content-Type": "application/json" // mcp server accepts raw string
+          }
+        }
+        //todo later - add api key to authorization header (if time)
       );
-      //todo later - add api key to authorization header
 
-      // const botResponse = 
-
-      return mcpResponse
+      const promptResponseMessage = obsMcpPromptResponse.data;
+      
+      return promptResponseMessage;
     }
     catch (error) {
-      console.error("UH OH BIG BAD BOO", error)
+      // extract the error message from the microservice error chat endpoint response
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error, ObsidianVaultMCPService.ERROR_MESSAGE_KEY);
+      throw new HttpError(code, message);
     }
-
   }
-
 }
