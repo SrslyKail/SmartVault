@@ -18,7 +18,7 @@ model User {
   id                    String  @id @default(uuid())
   email                 String  @unique
   hashedPassword        String  @unique // users can't have the same password
-  isAdmin               Boolean @default(false)
+  userType              UserType @default(REG_USER)
   apiServiceCallLimit   Int     @default(20) // added a default of 20 just in case not set programmatically
 
   // one-to-one relation with RefreshTokenInfo
@@ -39,4 +39,9 @@ model UserApiServiceUsage {
   totalNumApiCallsMade Int @default(0)
   user                User    @relation(fields: [userId], references: [id], onDelete: Cascade) 
   userId              String  @unique
+}
+
+enum UserType {
+  REG_USER
+  ADMIN
 }

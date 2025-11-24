@@ -6,8 +6,8 @@ import type { UserService } from '../services/user.service.ts';
 import type { AccessTokenClaims, AuthTokens } from '../types/index.ts';
 import { HTTP_STATUS_CODES } from '../constants/httpResponse.ts';
 import type { UserValidator } from '../validation/user/user.validator.ts';
-import { AUTH_ERRORS, AUTH_MESSAGES } from '../lang/en.ts';
-import type { User } from '../data/models/generated/prisma/client.ts';
+import { AUTH_ERRORS, AUTH_MESSAGES, HTTP_ERRORS } from '../lang/en.ts';
+import type { User, UserType } from '../data/models/generated/prisma/client.ts';
 import { ACCESS_TOKEN_COOKIE_KEY, REFRESH_TOKEN_COOKIE_KEY } from '../constants/authTokens.ts';
 import { isProd } from '../constants/isProd.ts';
 
@@ -133,6 +133,28 @@ export class AuthController {
       req.accessToken = accessToken;
 
       // go to next handler
+      next();
+    }
+    catch (error) {
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error);
+      logger.error(
+        `code: ${code}, message: ${message}`
+      );
+      const resData = { message: message };
+
+      res.status(code).json(resData);
+    }
+  }
+
+  public async checkIfAuthorized(req: Request, res: Response, requiredUserType: UserType, next: NextFunction) {
+    try {
+      const accessTokenClaims = AuthController.tryToExtractAccessTokenClaimsFromReq(req);
+
+      // if the user doesn't have the required user type
+      if (requiredUserType !== accessTokenClaims.userType) {
+        throw new HttpError(HTTP_STATUS_CODES.FORBIDDEN, HTTP_ERRORS.FORBIDDEN_ERROR);
+      }
+
       next();
     }
     catch (error) {

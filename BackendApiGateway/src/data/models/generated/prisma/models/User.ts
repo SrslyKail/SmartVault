@@ -38,7 +38,7 @@ export type UserMinAggregateOutputType = {
   id: string | null
   email: string | null
   hashedPassword: string | null
-  isAdmin: boolean | null
+  userType: $Enums.UserType | null
   apiServiceCallLimit: number | null
 }
 
@@ -46,7 +46,7 @@ export type UserMaxAggregateOutputType = {
   id: string | null
   email: string | null
   hashedPassword: string | null
-  isAdmin: boolean | null
+  userType: $Enums.UserType | null
   apiServiceCallLimit: number | null
 }
 
@@ -54,7 +54,7 @@ export type UserCountAggregateOutputType = {
   id: number
   email: number
   hashedPassword: number
-  isAdmin: number
+  userType: number
   apiServiceCallLimit: number
   _all: number
 }
@@ -72,7 +72,7 @@ export type UserMinAggregateInputType = {
   id?: true
   email?: true
   hashedPassword?: true
-  isAdmin?: true
+  userType?: true
   apiServiceCallLimit?: true
 }
 
@@ -80,7 +80,7 @@ export type UserMaxAggregateInputType = {
   id?: true
   email?: true
   hashedPassword?: true
-  isAdmin?: true
+  userType?: true
   apiServiceCallLimit?: true
 }
 
@@ -88,7 +88,7 @@ export type UserCountAggregateInputType = {
   id?: true
   email?: true
   hashedPassword?: true
-  isAdmin?: true
+  userType?: true
   apiServiceCallLimit?: true
   _all?: true
 }
@@ -183,7 +183,7 @@ export type UserGroupByOutputType = {
   id: string
   email: string
   hashedPassword: string
-  isAdmin: boolean
+  userType: $Enums.UserType
   apiServiceCallLimit: number
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
@@ -214,7 +214,7 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   hashedPassword?: Prisma.StringFilter<"User"> | string
-  isAdmin?: Prisma.BoolFilter<"User"> | boolean
+  userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFilter<"User"> | number
   refreshTokenInfo?: Prisma.XOR<Prisma.RefreshTokenInfoNullableScalarRelationFilter, Prisma.RefreshTokenInfoWhereInput> | null
   UserApiUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
@@ -224,7 +224,7 @@ export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
   apiServiceCallLimit?: Prisma.SortOrder
   refreshTokenInfo?: Prisma.RefreshTokenInfoOrderByWithRelationInput
   UserApiUsage?: Prisma.UserApiServiceUsageOrderByWithRelationInput
@@ -237,7 +237,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  isAdmin?: Prisma.BoolFilter<"User"> | boolean
+  userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFilter<"User"> | number
   refreshTokenInfo?: Prisma.XOR<Prisma.RefreshTokenInfoNullableScalarRelationFilter, Prisma.RefreshTokenInfoWhereInput> | null
   UserApiUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
@@ -247,7 +247,7 @@ export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
   apiServiceCallLimit?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
@@ -263,7 +263,7 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   hashedPassword?: Prisma.StringWithAggregatesFilter<"User"> | string
-  isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  userType?: Prisma.EnumUserTypeWithAggregatesFilter<"User"> | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntWithAggregatesFilter<"User"> | number
 }
 
@@ -271,7 +271,7 @@ export type UserCreateInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoCreateNestedOneWithoutUserInput
   UserApiUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
@@ -281,7 +281,7 @@ export type UserUncheckedCreateInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedCreateNestedOneWithoutUserInput
   UserApiUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
@@ -291,7 +291,7 @@ export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUpdateOneWithoutUserNestedInput
   UserApiUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
@@ -301,7 +301,7 @@ export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedUpdateOneWithoutUserNestedInput
   UserApiUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
@@ -311,7 +311,7 @@ export type UserCreateManyInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
 }
 
@@ -319,7 +319,7 @@ export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -327,7 +327,7 @@ export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -335,7 +335,7 @@ export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
   apiServiceCallLimit?: Prisma.SortOrder
 }
 
@@ -347,7 +347,7 @@ export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
   apiServiceCallLimit?: Prisma.SortOrder
 }
 
@@ -355,7 +355,7 @@ export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
-  isAdmin?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
   apiServiceCallLimit?: Prisma.SortOrder
 }
 
@@ -372,8 +372,8 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
+export type EnumUserTypeFieldUpdateOperationsInput = {
+  set?: $Enums.UserType
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -416,7 +416,7 @@ export type UserCreateWithoutRefreshTokenInfoInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
   UserApiUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
 }
@@ -425,7 +425,7 @@ export type UserUncheckedCreateWithoutRefreshTokenInfoInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
   UserApiUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
 }
@@ -450,7 +450,7 @@ export type UserUpdateWithoutRefreshTokenInfoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   UserApiUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
 }
@@ -459,7 +459,7 @@ export type UserUncheckedUpdateWithoutRefreshTokenInfoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   UserApiUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
 }
@@ -468,7 +468,7 @@ export type UserCreateWithoutUserApiUsageInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoCreateNestedOneWithoutUserInput
 }
@@ -477,7 +477,7 @@ export type UserUncheckedCreateWithoutUserApiUsageInput = {
   id?: string
   email: string
   hashedPassword: string
-  isAdmin?: boolean
+  userType?: $Enums.UserType
   apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedCreateNestedOneWithoutUserInput
 }
@@ -502,7 +502,7 @@ export type UserUpdateWithoutUserApiUsageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUpdateOneWithoutUserNestedInput
 }
@@ -511,7 +511,7 @@ export type UserUncheckedUpdateWithoutUserApiUsageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
-  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedUpdateOneWithoutUserNestedInput
 }
@@ -522,7 +522,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   email?: boolean
   hashedPassword?: boolean
-  isAdmin?: boolean
+  userType?: boolean
   apiServiceCallLimit?: boolean
   refreshTokenInfo?: boolean | Prisma.User$refreshTokenInfoArgs<ExtArgs>
   UserApiUsage?: boolean | Prisma.User$UserApiUsageArgs<ExtArgs>
@@ -532,7 +532,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   email?: boolean
   hashedPassword?: boolean
-  isAdmin?: boolean
+  userType?: boolean
   apiServiceCallLimit?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -540,7 +540,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   email?: boolean
   hashedPassword?: boolean
-  isAdmin?: boolean
+  userType?: boolean
   apiServiceCallLimit?: boolean
 }, ExtArgs["result"]["user"]>
 
@@ -548,11 +548,11 @@ export type UserSelectScalar = {
   id?: boolean
   email?: boolean
   hashedPassword?: boolean
-  isAdmin?: boolean
+  userType?: boolean
   apiServiceCallLimit?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "hashedPassword" | "isAdmin" | "apiServiceCallLimit", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "hashedPassword" | "userType" | "apiServiceCallLimit", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refreshTokenInfo?: boolean | Prisma.User$refreshTokenInfoArgs<ExtArgs>
   UserApiUsage?: boolean | Prisma.User$UserApiUsageArgs<ExtArgs>
@@ -570,7 +570,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     email: string
     hashedPassword: string
-    isAdmin: boolean
+    userType: $Enums.UserType
     apiServiceCallLimit: number
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -1000,7 +1000,7 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly hashedPassword: Prisma.FieldRef<"User", 'String'>
-  readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>
+  readonly userType: Prisma.FieldRef<"User", 'UserType'>
   readonly apiServiceCallLimit: Prisma.FieldRef<"User", 'Int'>
 }
     
