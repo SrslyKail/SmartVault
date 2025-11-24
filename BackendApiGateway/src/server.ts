@@ -1,12 +1,22 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from 'express'
-// import type { Request, Response } from 'express'
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Smart Vault',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./src/*.ts']
+};
+const swaggerSpec = swaggerJSDoc(options);
 import { authController, obsVaultController, usersController } from './serverDependencies.ts';
-// import { HTTP_STATUS_CODES } from './constants/httpResponse.ts';
 import cookieParser from "cookie-parser";
 import cors from 'cors';
-// import { McpChatHub } from "./middleware/mcpChatHub.ts"
 import { uncapitalizeReqBodyProperties } from "./middleware/uncapitalizeProps.ts";
 import { UserType } from "./data/models/generated/prisma/enums.ts";
 
@@ -48,11 +58,65 @@ app.use(uncapitalizeReqBodyProperties);
 
 // app.get("/", getHelloMsg);
 
+app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // === Auth endpoints ===
+/**
+ * @openapi
+ * /api/auth/login:
+ *  post:
+ *    summary: Logs in a user, given they have an auth cookie
+ *    requestBody:
+ *      required: true
+ *      content:
+ *       application/json:
+ *          schema: 
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                description: The users email
+ *              password:
+ *                type: string
+ *                description: The users password
+ *            required:
+ *              - email
+ *              - password
+ *  responses:
+ *    200:
+ *      description: The login was successful
+ */
 app.post("/api/auth/login", authController.login.bind(authController));
+
+/**
+ * @openapi
+ * /api/auth/signup:
+ *  post:
+ *    summary: Sign up and get an auth cookie
+ *    requestBody:
+ *      required: true
+ *      content:
+ *       application/json:
+ *          schema: 
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                description: The users email
+ *              password:
+ *                type: string
+ *                description: The users password
+ *            required:
+ *              - email
+ *              - password
+ *  responses:
+ *    200:
+ *      description: The signup was successful
+ */
 app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(usersController));
+app.get("/api-doc", swaggerUi.setup(swaggerSpec));
 
 // === User related endpoints ===
 
