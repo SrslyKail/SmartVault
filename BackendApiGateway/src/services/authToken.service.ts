@@ -166,7 +166,7 @@ export class AuthTokenService {
     const newAccessTokenClaims: AccessTokenClaims = {
       userId: user.id,
       email: user.email,
-      isAdmin: user.isAdmin,
+      userType: user.userType,
       apiServiceCallLimit: user.apiServiceCallLimit,
     };
 
@@ -211,7 +211,7 @@ export class AuthTokenService {
     const accessTokenClaims: AccessTokenClaims = {
       userId:     user.id,
       email:      user.email,
-      isAdmin:    user.isAdmin,
+      userType:    user.userType,
       apiServiceCallLimit: user.apiServiceCallLimit,
     };
 

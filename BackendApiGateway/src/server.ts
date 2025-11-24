@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors';
 // import { McpChatHub } from "./middleware/mcpChatHub.ts"
 import { uncapitalizeReqBodyProperties } from "./middleware/uncapitalizeProps.ts";
+import { UserType } from "./data/models/generated/prisma/enums.ts";
 
 const port = process.env.BACKEND_API_PORT || 8001;
 const app = express();
@@ -53,7 +54,15 @@ app.post("/api/auth/signup", authController.signup.bind(authController));
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(usersController));
 
-// === Service endpoints (currently limited to 20 for all users) ===
+// === User related endpoints ===
+
+app.patch("/api/admin/users", 
+  authController.authenticate.bind(authController),
+  (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
+  usersController.patchUpdateUser.bind(usersController)
+);
+
+// === Obsidian Vault MCP endpoints (currently limited to 20 for all users) ===
 app.post("/api/obs-vault/chat", authController.authenticate.bind(authController), obsVaultController.createPromptAndGetResponse.bind(obsVaultController));
 
 app.listen(port, () => console.log(`App is listening on port ${port} - http://localhost:${port}`));

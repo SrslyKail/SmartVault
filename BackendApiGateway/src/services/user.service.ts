@@ -1,17 +1,21 @@
 import { HTTP_STATUS_CODES } from "../constants/httpResponse.ts";
 import { HttpError } from "../errors/httpError.ts";
-import { AUTH_ERRORS } from "../lang/en.ts";
+import { API_SERVICE_USAGE_ERRORS, AUTH_ERRORS, USER_ERRORS } from "../lang/en.ts";
 import bcrypt from "bcrypt";
 import { logger } from "./logger.service.ts";
-import type { User, UserApiServiceUsage } from "../data/models/generated/prisma/client.ts";
+import { UserType, type User, type UserApiServiceUsage } from "../data/models/generated/prisma/client.ts";
 import { prisma } from "../data/db.ts";
 import { APICallLimiter } from "../lib/apiCallLimit.ts";
 import type { UserApiUsageService } from "./userApiUsageService.service.ts";
+import type { UpdateUserRequestDTO } from "../types/index.ts";
+import { removeUndefinedObjectProps } from "../utils/removeUndefinedProps.ts";
 
 export class UserService {
 
   private static readonly NUM_SALT_ROUNDS = 10;
-  private static readonly DEFAULT_USER_ADMIN_STATUS = false;
+  private static readonly DEFAULT_USER_TYPE = UserType.REG_USER;
+  
+  public static readonly MIN_PASSWORD_LENGTH = 6;
 
   private readonly userApiUsageService: UserApiUsageService;
 
@@ -29,7 +33,7 @@ export class UserService {
       data: {
         email: email,
         hashedPassword: hashedPassword,
-        isAdmin: UserService.DEFAULT_USER_ADMIN_STATUS,
+        userType: UserService.DEFAULT_USER_TYPE,
         apiServiceCallLimit: APICallLimiter.SERVICE_API_CALL_LIMIT_ALL_USERS,
         
         // nested create to link a new refreshTokenInfo entity to the user entity by user id
@@ -41,7 +45,7 @@ export class UserService {
 
     await this.userApiUsageService.createNewUserApiUsageEntry(newUser.id);
 
-    logger.info(`Created new user: ${newUser.email} ${newUser.isAdmin}`);
+    logger.info(`Created new user: ${newUser.email} ${newUser.userType}`);
 
     return newUser;
   }
@@ -81,5 +85,55 @@ export class UserService {
     }
 
     return user;
+  }
+
+  public async updateUser(updateUserValues: UpdateUserRequestDTO): Promise<User> {
+
+    const foundUser: User | null = await this.getUserById(updateUserValues.id);
+
+    // if user does not exist
+    if (!foundUser) {
+      throw new HttpError(HTTP_STATUS_CODES.NOT_FOUND, AUTH_ERRORS.USER_NOT_FOUND_WITH_ID_ERROR);
+    }
+
+    const apiServiceCallLimit: number | undefined = updateUserValues.apiServiceCallLimit;
+    const email: string | undefined = updateUserValues.email
+    const hashedPassword: string | undefined = updateUserValues.hashedPassword
+
+    // === domain / business logic level validation ===
+    if (
+      apiServiceCallLimit && 
+      apiServiceCallLimit > APICallLimiter.SERVICE_API_CALL_LIMIT_ALL_USERS
+    ) {
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, API_SERVICE_USAGE_ERRORS.GREATER_THAN_MAX_NUM_USES_ERROR);
+    }
+
+    if (email) {
+      const existingUser = await this.findUserByEmail(email);
+
+      // if the email is already associated with an existing user
+      if (existingUser) {
+        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMAIL_ALREADY_EXISTS_ERROR);
+      }
+    }
+
+    if (
+      hashedPassword && 
+      hashedPassword.length < UserService.MIN_PASSWORD_LENGTH
+    ) {
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.LESS_THAN_MIN_PASSWORD_LENGTH);
+    }
+
+    // remove undefined fields
+    const userPropsToUpdate = removeUndefinedObjectProps(updateUserValues);
+
+    const updatedUser: User = await prisma.user.update({
+      where: { id: foundUser.id },
+      data: {
+        ...userPropsToUpdate
+      }
+    });
+
+    return updatedUser;
   }
 }

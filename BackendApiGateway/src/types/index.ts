@@ -1,5 +1,5 @@
 import type { JwtPayload } from "jsonwebtoken";
-import type { User } from "../data/models/generated/prisma/client.ts";
+import type { User, UserType } from "../data/models/generated/prisma/client.ts";
 
 export type AuthTokens = {
   accessToken: string;
@@ -23,7 +23,7 @@ type JWTTokenStandardClaims = Pick<JwtPayload, 'iss' | 'aud' | 'exp'>;
 export type AccessTokenClaims = JWTTokenStandardClaims & {
   userId: string;
   email: string;
-  isAdmin: boolean;
+  userType: UserType;
   apiServiceCallLimit: number;
 };
 
@@ -33,3 +33,6 @@ export type RefreshTokenClaims = JWTTokenStandardClaims & {
 };
 
 export type GetUserResponse = Omit<User, 'hashedPassword'>;
+
+// only id is required, the rest are optional
+export type UpdateUserRequestDTO = Partial<Omit<User, 'id'>> & Pick<User, 'id'>;
