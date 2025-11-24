@@ -12,13 +12,13 @@ namespace SmartVaultClient.Services;
 
 public interface IHttpService
 {
-    Task<T> Get<T>(string uri);
+    Task<T?> Get<T>(string uri);
     Task Post(string uri, object value);
-    Task<T> Post<T>(string uri, object value);
+    Task<T?> Post<T>(string uri, object value);
     Task Put(string uri, object value);
-    Task<T> Put<T>(string uri, object value);
+    Task<T?> Put<T>(string uri, object value);
     Task Delete(string uri);
-    Task<T> Delete<T>(string uri);
+    Task<T?> Delete<T>(string uri);
 }
 
 public class HttpService : IHttpService
@@ -38,7 +38,7 @@ public class HttpService : IHttpService
         _configuration = configuration;
     }
 
-    public async Task<T> Get<T>(string uri)
+    public async Task<T?> Get<T>(string uri)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
         return await SendRequest<T>(request);
@@ -50,7 +50,7 @@ public class HttpService : IHttpService
         await SendRequest(request);
     }
 
-    public async Task<T> Post<T>(string uri, object value)
+    public async Task<T?> Post<T>(string uri, object value)
     {
         var request = CreateRequest(HttpMethod.Post, uri, value);
         return await SendRequest<T>(request);
@@ -62,7 +62,7 @@ public class HttpService : IHttpService
         await SendRequest(request);
     }
 
-    public async Task<T> Put<T>(string uri, object value)
+    public async Task<T?> Put<T>(string uri, object value)
     {
         var request = CreateRequest(HttpMethod.Put, uri, value);
         return await SendRequest<T>(request);
@@ -74,7 +74,7 @@ public class HttpService : IHttpService
         await SendRequest(request);
     }
 
-    public async Task<T> Delete<T>(string uri)
+    public async Task<T?> Delete<T>(string uri)
     {
         var request = CreateRequest(HttpMethod.Delete, uri);
         return await SendRequest<T>(request);
@@ -115,7 +115,7 @@ public class HttpService : IHttpService
         await handleErrors(response);
     }
 
-    private async Task<T> SendRequest<T>(HttpRequestMessage request)
+    private async Task<T?> SendRequest<T>(HttpRequestMessage request)
     {
         // await addJwtHeader(request);
 

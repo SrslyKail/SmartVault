@@ -49,7 +49,7 @@
     private HubConnection? _hubConnection;
     protected override async Task OnInitializedAsync()
     {
-        _user = AccountService.User;
+        await Task.Run(() => _user = AccountService.User);
 
         @* await StartChatConnection(); *@
     }

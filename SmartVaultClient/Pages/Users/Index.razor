@@ -52,13 +52,15 @@
 
 @code {
     private bool loading;
-    private IList<User> users;
+    private IList<User> users = [];
 
     protected override async Task OnInitializedAsync()
     {
         loading = true;
-        users = await AccountService.GetAll();
+        
         loading = false;
+        var _users = await AccountService.GetAll();
+        users = _users == null ? [] : _users;
     }
 
     private async void DeleteUser(string id) 

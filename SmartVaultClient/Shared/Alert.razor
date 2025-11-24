@@ -66,9 +66,12 @@
         StateHasChanged();
     }
 
-    private void OnLocationChange(object sender, LocationChangedEventArgs e)
+    private void OnLocationChange(object? sender, LocationChangedEventArgs e)
     {
-        AlertService.Clear(Id);
+        if(sender != null)
+        {
+            AlertService.Clear(Id);
+        }
     }
 
     private async void RemoveAlert(Models.Alert alert)
@@ -96,15 +99,17 @@
 
     private string CssClass(Models.Alert alert) 
     {
-        if (alert == null) return null;
+        if (alert == null) return "";
 
         var classes = new List<string> { "alert", "alert-dismissable", "mt-4", "container" };
 
-        var alertTypeClass = new Dictionary<AlertType, string>();
-        alertTypeClass[AlertType.Success] = "alert-success";
-        alertTypeClass[AlertType.Error] = "alert-danger";
-        alertTypeClass[AlertType.Info] = "alert-info";
-        alertTypeClass[AlertType.Warning] = "alert-warning";
+        var alertTypeClass = new Dictionary<AlertType, string>
+        {
+            {AlertType.Success, "alert-success"},
+            {AlertType.Error, "alert-danger"},
+            {AlertType.Info, "alert-info"},
+            {AlertType.Warning, "alert-warning"}
+        };
 
         classes.Add(alertTypeClass[alert.Type]);
 
