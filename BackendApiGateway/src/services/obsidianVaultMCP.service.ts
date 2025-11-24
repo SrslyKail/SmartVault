@@ -11,8 +11,6 @@ export class ObsidianVaultMCPService {
 
   public async createPromptAndGetResponse(prompt: string) {
 
-    // TODO: check if tokens used has exceeded the maximum amount, if so, add rate limit warning to response but continue to provide services
-
     const chatEndpointUrl = `${process.env.OBSIDIAN_MCP_SERVER_DOMAIN!}/Chat`;
 
     try {
