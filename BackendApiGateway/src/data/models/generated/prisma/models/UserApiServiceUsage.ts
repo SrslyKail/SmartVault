@@ -230,7 +230,7 @@ export type UserApiServiceUsageScalarWhereWithAggregatesInput = {
 
 export type UserApiServiceUsageCreateInput = {
   totalNumApiCallsMade?: number
-  user: Prisma.UserCreateNestedOneWithoutUserApiUsageInput
+  user: Prisma.UserCreateNestedOneWithoutUserApiServiceUsageInput
 }
 
 export type UserApiServiceUsageUncheckedCreateInput = {
@@ -240,7 +240,7 @@ export type UserApiServiceUsageUncheckedCreateInput = {
 
 export type UserApiServiceUsageUpdateInput = {
   totalNumApiCallsMade?: Prisma.IntFieldUpdateOperationsInput | number
-  user?: Prisma.UserUpdateOneRequiredWithoutUserApiUsageNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutUserApiServiceUsageNestedInput
 }
 
 export type UserApiServiceUsageUncheckedUpdateInput = {

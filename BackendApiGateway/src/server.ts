@@ -49,7 +49,7 @@ app.use(cookieParser());
 // Parse incoming requests into json
 app.use(express.json());
 
-// Uncapitalize all properties from the request body (asp.net core models require fields to be capitalized)
+// Uncapitalize first letter of all properties from the request body (asp.net core models require fields to be capitalized)
 app.use(uncapitalizeReqBodyProperties);
 
 // const getHelloMsg = (req: Request, res: Response) => {
@@ -156,6 +156,22 @@ app.get("/api/auth/me", authController.authenticate.bind(authController), usersC
 app.get("/api-doc", swaggerUi.setup(swaggerSpec));
 
 // === User related endpoints ===
+
+  // --- ADMIN ONLY ---
+//TODO: swagger openapi decorator
+app.get("/api/admin/users/:id", 
+  authController.authenticate.bind(authController), 
+  (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
+  usersController.getUserById.bind(usersController)
+);
+
+  // --- ADMIN ONLY ---
+//TODO: swagger openapi decorator
+app.get("/api/admin/users",
+  authController.authenticate.bind(authController), 
+  (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
+  usersController.getAllUsersAndApiCallTotals.bind(usersController)
+);
 
 // --- ADMIN ONLY ---
 /**

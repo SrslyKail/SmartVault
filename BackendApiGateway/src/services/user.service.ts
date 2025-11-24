@@ -27,6 +27,10 @@ export class UserService {
 
   public async createNewUser(email: string, password: string): Promise<User> {
 
+    if (password.length < UserService.MIN_PASSWORD_LENGTH) {
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.LESS_THAN_MIN_PASSWORD_LENGTH);
+    }
+
     const hashedPassword = await UserService.hashPassword(password);
 
     const newUser: User = await prisma.user.create({
@@ -57,6 +61,19 @@ export class UserService {
     });
 
     return user;
+  }
+
+  public async getAllUsersAndTheirApiCallTotals() {
+    const users = await prisma.user.findMany({      
+      omit: {
+        hashedPassword: true,
+      },
+      include: {
+        userApiServiceUsage: true
+      },
+    });
+
+    return users;
   }
 
   public async findUserByEmail(userEmail: string): Promise<User | null> {

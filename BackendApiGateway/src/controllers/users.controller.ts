@@ -1,6 +1,6 @@
 import type { User } from "../data/models/generated/prisma/client.ts";
 import { UserService } from "../services/user.service.ts";
-import type { AccessTokenClaims, GetUserResponse, UpdateUserRequestDTO } from "../types/index.ts";
+import type { AccessTokenClaims, GetUserResponseDTO, UpdateUserRequestDTO } from "../types/index.ts";
 import { AuthTokenService } from "../services/authToken.service.ts";
 import { logger } from "../services/logger.service.ts";
 import { HttpError } from "../errors/httpError.ts";
@@ -32,20 +32,46 @@ export class UsersController {
       // get user id from accessTokenClaims
       const userId = accessTokenClaims.userId;
       
-      const user: User | null = await this.userService.getUserById(userId);
+      await this.tryGetUserById(res, userId);
+    }
+    catch (error) {
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error);
+      logger.error(
+        `code: ${code}, message: ${message}`
+      );
+      const resData = { message: message };
 
-      if (!user) {
-        throw new HttpError(HTTP_STATUS_CODES.NOT_FOUND, AUTH_ERRORS.USER_NOT_FOUND_WITH_ID_ERROR);
-      }
+      res.status(code).json(resData);
+    }
+  }
 
-      // remove the hashed password from the user response
-      const userResDto: GetUserResponse = {
-        id: user.id,
-        email: user.email,
-        userType: user.userType,
-        apiServiceCallLimit: user.apiServiceCallLimit,
+  public async getUserById(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+
+      if (!userId) {
+        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.MISSING_USER_ID);
       }
-      res.status(HTTP_STATUS_CODES.OK).json(userResDto);
+      
+      await this.tryGetUserById(res, userId);
+    }
+    catch (error) {
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error);
+      logger.error(
+        `code: ${code}, message: ${message}`
+      );
+      const resData = { message: message };
+
+      res.status(code).json(resData);
+    }
+  }
+
+  public async getAllUsersAndApiCallTotals(req: Request, res: Response) {
+    try {
+      // each user obj contains userApiServiceUsage object
+      const users = await this.userService.getAllUsersAndTheirApiCallTotals();
+
+      res.status(HTTP_STATUS_CODES.OK).json(users);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
@@ -97,6 +123,35 @@ export class UsersController {
     }
   }
 
+  public async deleteUserById(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+
+      if (!userId) {
+        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.MISSING_USER_ID);
+      }
+
+      await this.userService.deleteUserWithId(userId);
+
+      const resData = {
+        message: `${USER_MESSAGES.DELETED_USER} ${userId}`
+      }
+
+      res.status(HTTP_STATUS_CODES.OK).json(resData);
+    }
+    catch (error) {
+      const { code, message } = HttpError.extractErrorCodeAndMessage(error);
+      logger.error(
+        `code: ${code}, message: ${message}`
+      );
+      const resData = { message: message };
+
+      res.status(code).json(resData);
+    }
+  }
+
+  // === PRIVATE METHODS ===
+
   private async tryPatchUpdateUser(req: Request, res: Response, userId: string) {
     // try {
       // const accessTokenClaims: AccessTokenClaims = AuthController.tryToExtractAccessTokenClaimsFromReq(req);
@@ -137,21 +192,25 @@ export class UsersController {
     // }
   }
 
-  public async deleteUserById(req: Request, res: Response) {
+  private async tryGetUserById(res: Response, userId: string) {
     try {
-      const userId = req.params.id;
+      const user: User | null = await this.userService.getUserById(userId);
 
-      if (!userId) {
-        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.MISSING_USER_ID);
+      if (!user) {
+        throw new HttpError(HTTP_STATUS_CODES.NOT_FOUND, AUTH_ERRORS.USER_NOT_FOUND_WITH_ID_ERROR);
       }
 
-      await this.userService.deleteUserWithId(userId);
+      // remove the hashed password from the user response
+      const userResDto: GetUserResponseDTO = {
+        id: user.id,
+        email: user.email,
+        userType: user.userType,
+        apiServiceCallLimit: user.apiServiceCallLimit,
 
-      const resData = {
-        message: `${USER_MESSAGES.DELETED_USER} ${userId}`
-      }
+        //TODO: add total # requests made to services
+      };
 
-      res.status(HTTP_STATUS_CODES.OK).json(resData);
+      res.status(HTTP_STATUS_CODES.OK).json(userResDto);
     }
     catch (error) {
       const { code, message } = HttpError.extractErrorCodeAndMessage(error);
