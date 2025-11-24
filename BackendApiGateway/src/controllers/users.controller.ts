@@ -11,15 +11,11 @@ import { AUTH_ERRORS } from "../lang/en.ts";
 
 export class UsersController {
 
-  private readonly userService:UserService;
-  private readonly authController: AuthController;
+  private readonly userService: UserService;
 
-  public constructor(userService: UserService,
-    authController: AuthController
-  ) 
+  public constructor(userService: UserService) 
   {
     this.userService = userService;
-    this.authController = authController;
   }
 
   public async getCurrentUser(req: Request, res: Response) {
@@ -40,8 +36,7 @@ export class UsersController {
         id: user.id,
         email: user.email,
         isAdmin: user.isAdmin,
-        obsVaultMcpTokenLimit: user.obsVaultMcpTokenLimit,
-        obsVaultMcpTokensUsed: user.obsVaultMcpTokensUsed,
+        apiServiceCallLimit: user.apiServiceCallLimit,
       }
       res.status(HTTP_STATUS_CODES.OK).json(userResDto);
     }

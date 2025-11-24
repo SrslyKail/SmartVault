@@ -76,4 +76,11 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
         if (id == User?.Id)
             await Logout();
     }
+
+    /*
+    one to make someone an admin (use PATCH)
+    one to delete a user (use DELETE)
+    one to send the prompt like you said
+    one to get another user's information
+    */
 }

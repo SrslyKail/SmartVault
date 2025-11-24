@@ -27,13 +27,11 @@ export type AggregateUser = {
 }
 
 export type UserAvgAggregateOutputType = {
-  obsVaultMcpTokenLimit: number | null
-  obsVaultMcpTokensUsed: number | null
+  apiServiceCallLimit: number | null
 }
 
 export type UserSumAggregateOutputType = {
-  obsVaultMcpTokenLimit: number | null
-  obsVaultMcpTokensUsed: number | null
+  apiServiceCallLimit: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -41,8 +39,7 @@ export type UserMinAggregateOutputType = {
   email: string | null
   hashedPassword: string | null
   isAdmin: boolean | null
-  obsVaultMcpTokenLimit: number | null
-  obsVaultMcpTokensUsed: number | null
+  apiServiceCallLimit: number | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,8 +47,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   hashedPassword: string | null
   isAdmin: boolean | null
-  obsVaultMcpTokenLimit: number | null
-  obsVaultMcpTokensUsed: number | null
+  apiServiceCallLimit: number | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -59,20 +55,17 @@ export type UserCountAggregateOutputType = {
   email: number
   hashedPassword: number
   isAdmin: number
-  obsVaultMcpTokenLimit: number
-  obsVaultMcpTokensUsed: number
+  apiServiceCallLimit: number
   _all: number
 }
 
 
 export type UserAvgAggregateInputType = {
-  obsVaultMcpTokenLimit?: true
-  obsVaultMcpTokensUsed?: true
+  apiServiceCallLimit?: true
 }
 
 export type UserSumAggregateInputType = {
-  obsVaultMcpTokenLimit?: true
-  obsVaultMcpTokensUsed?: true
+  apiServiceCallLimit?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -80,8 +73,7 @@ export type UserMinAggregateInputType = {
   email?: true
   hashedPassword?: true
   isAdmin?: true
-  obsVaultMcpTokenLimit?: true
-  obsVaultMcpTokensUsed?: true
+  apiServiceCallLimit?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -89,8 +81,7 @@ export type UserMaxAggregateInputType = {
   email?: true
   hashedPassword?: true
   isAdmin?: true
-  obsVaultMcpTokenLimit?: true
-  obsVaultMcpTokensUsed?: true
+  apiServiceCallLimit?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -98,8 +89,7 @@ export type UserCountAggregateInputType = {
   email?: true
   hashedPassword?: true
   isAdmin?: true
-  obsVaultMcpTokenLimit?: true
-  obsVaultMcpTokensUsed?: true
+  apiServiceCallLimit?: true
   _all?: true
 }
 
@@ -194,8 +184,7 @@ export type UserGroupByOutputType = {
   email: string
   hashedPassword: string
   isAdmin: boolean
-  obsVaultMcpTokenLimit: number
-  obsVaultMcpTokensUsed: number
+  apiServiceCallLimit: number
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -226,9 +215,9 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   hashedPassword?: Prisma.StringFilter<"User"> | string
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFilter<"User"> | number
-  obsVaultMcpTokensUsed?: Prisma.IntFilter<"User"> | number
+  apiServiceCallLimit?: Prisma.IntFilter<"User"> | number
   refreshTokenInfo?: Prisma.XOR<Prisma.RefreshTokenInfoNullableScalarRelationFilter, Prisma.RefreshTokenInfoWhereInput> | null
+  UserApiUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -236,9 +225,9 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
   refreshTokenInfo?: Prisma.RefreshTokenInfoOrderByWithRelationInput
+  UserApiUsage?: Prisma.UserApiServiceUsageOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -249,9 +238,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   isAdmin?: Prisma.BoolFilter<"User"> | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFilter<"User"> | number
-  obsVaultMcpTokensUsed?: Prisma.IntFilter<"User"> | number
+  apiServiceCallLimit?: Prisma.IntFilter<"User"> | number
   refreshTokenInfo?: Prisma.XOR<Prisma.RefreshTokenInfoNullableScalarRelationFilter, Prisma.RefreshTokenInfoWhereInput> | null
+  UserApiUsage?: Prisma.XOR<Prisma.UserApiServiceUsageNullableScalarRelationFilter, Prisma.UserApiServiceUsageWhereInput> | null
 }, "id" | "email" | "hashedPassword">
 
 export type UserOrderByWithAggregationInput = {
@@ -259,8 +248,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -276,8 +264,7 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   hashedPassword?: Prisma.StringWithAggregatesFilter<"User"> | string
   isAdmin?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntWithAggregatesFilter<"User"> | number
-  obsVaultMcpTokensUsed?: Prisma.IntWithAggregatesFilter<"User"> | number
+  apiServiceCallLimit?: Prisma.IntWithAggregatesFilter<"User"> | number
 }
 
 export type UserCreateInput = {
@@ -285,9 +272,9 @@ export type UserCreateInput = {
   email: string
   hashedPassword: string
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: number
-  obsVaultMcpTokensUsed?: number
+  apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoCreateNestedOneWithoutUserInput
+  UserApiUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -295,9 +282,9 @@ export type UserUncheckedCreateInput = {
   email: string
   hashedPassword: string
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: number
-  obsVaultMcpTokensUsed?: number
+  apiServiceCallLimit?: number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedCreateNestedOneWithoutUserInput
+  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -305,9 +292,9 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  obsVaultMcpTokensUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUpdateOneWithoutUserNestedInput
+  UserApiUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -315,9 +302,9 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  obsVaultMcpTokensUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
   refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedUpdateOneWithoutUserNestedInput
+  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -325,8 +312,7 @@ export type UserCreateManyInput = {
   email: string
   hashedPassword: string
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: number
-  obsVaultMcpTokensUsed?: number
+  apiServiceCallLimit?: number
 }
 
 export type UserUpdateManyMutationInput = {
@@ -334,8 +320,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  obsVaultMcpTokensUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -343,8 +328,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  obsVaultMcpTokensUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -352,13 +336,11 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -366,8 +348,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -375,13 +356,11 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   hashedPassword?: Prisma.SortOrder
   isAdmin?: Prisma.SortOrder
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
-  obsVaultMcpTokenLimit?: Prisma.SortOrder
-  obsVaultMcpTokensUsed?: Prisma.SortOrder
+  apiServiceCallLimit?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -419,13 +398,27 @@ export type UserUpdateOneRequiredWithoutRefreshTokenInfoNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokenInfoInput, Prisma.UserUpdateWithoutRefreshTokenInfoInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokenInfoInput>
 }
 
+export type UserCreateNestedOneWithoutUserApiUsageInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserApiUsageInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUserApiUsageNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserApiUsageInput
+  upsert?: Prisma.UserUpsertWithoutUserApiUsageInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserApiUsageInput, Prisma.UserUpdateWithoutUserApiUsageInput>, Prisma.UserUncheckedUpdateWithoutUserApiUsageInput>
+}
+
 export type UserCreateWithoutRefreshTokenInfoInput = {
   id?: string
   email: string
   hashedPassword: string
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: number
-  obsVaultMcpTokensUsed?: number
+  apiServiceCallLimit?: number
+  UserApiUsage?: Prisma.UserApiServiceUsageCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokenInfoInput = {
@@ -433,8 +426,8 @@ export type UserUncheckedCreateWithoutRefreshTokenInfoInput = {
   email: string
   hashedPassword: string
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: number
-  obsVaultMcpTokensUsed?: number
+  apiServiceCallLimit?: number
+  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokenInfoInput = {
@@ -458,8 +451,8 @@ export type UserUpdateWithoutRefreshTokenInfoInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  obsVaultMcpTokensUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  UserApiUsage?: Prisma.UserApiServiceUsageUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokenInfoInput = {
@@ -467,8 +460,60 @@ export type UserUncheckedUpdateWithoutRefreshTokenInfoInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
   isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  obsVaultMcpTokenLimit?: Prisma.IntFieldUpdateOperationsInput | number
-  obsVaultMcpTokensUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  UserApiUsage?: Prisma.UserApiServiceUsageUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutUserApiUsageInput = {
+  id?: string
+  email: string
+  hashedPassword: string
+  isAdmin?: boolean
+  apiServiceCallLimit?: number
+  refreshTokenInfo?: Prisma.RefreshTokenInfoCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUserApiUsageInput = {
+  id?: string
+  email: string
+  hashedPassword: string
+  isAdmin?: boolean
+  apiServiceCallLimit?: number
+  refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutUserApiUsageInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
+}
+
+export type UserUpsertWithoutUserApiUsageInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserApiUsageInput, Prisma.UserUncheckedUpdateWithoutUserApiUsageInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserApiUsageInput, Prisma.UserUncheckedCreateWithoutUserApiUsageInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUserApiUsageInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserApiUsageInput, Prisma.UserUncheckedUpdateWithoutUserApiUsageInput>
+}
+
+export type UserUpdateWithoutUserApiUsageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  refreshTokenInfo?: Prisma.RefreshTokenInfoUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUserApiUsageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  hashedPassword?: Prisma.StringFieldUpdateOperationsInput | string
+  isAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  apiServiceCallLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  refreshTokenInfo?: Prisma.RefreshTokenInfoUncheckedUpdateOneWithoutUserNestedInput
 }
 
 
@@ -478,9 +523,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   hashedPassword?: boolean
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: boolean
-  obsVaultMcpTokensUsed?: boolean
+  apiServiceCallLimit?: boolean
   refreshTokenInfo?: boolean | Prisma.User$refreshTokenInfoArgs<ExtArgs>
+  UserApiUsage?: boolean | Prisma.User$UserApiUsageArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -488,8 +533,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   hashedPassword?: boolean
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: boolean
-  obsVaultMcpTokensUsed?: boolean
+  apiServiceCallLimit?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -497,8 +541,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   email?: boolean
   hashedPassword?: boolean
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: boolean
-  obsVaultMcpTokensUsed?: boolean
+  apiServiceCallLimit?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -506,13 +549,13 @@ export type UserSelectScalar = {
   email?: boolean
   hashedPassword?: boolean
   isAdmin?: boolean
-  obsVaultMcpTokenLimit?: boolean
-  obsVaultMcpTokensUsed?: boolean
+  apiServiceCallLimit?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "hashedPassword" | "isAdmin" | "obsVaultMcpTokenLimit" | "obsVaultMcpTokensUsed", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "hashedPassword" | "isAdmin" | "apiServiceCallLimit", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refreshTokenInfo?: boolean | Prisma.User$refreshTokenInfoArgs<ExtArgs>
+  UserApiUsage?: boolean | Prisma.User$UserApiUsageArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -521,14 +564,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     refreshTokenInfo: Prisma.$RefreshTokenInfoPayload<ExtArgs> | null
+    UserApiUsage: Prisma.$UserApiServiceUsagePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
     hashedPassword: string
     isAdmin: boolean
-    obsVaultMcpTokenLimit: number
-    obsVaultMcpTokensUsed: number
+    apiServiceCallLimit: number
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -924,6 +967,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   refreshTokenInfo<T extends Prisma.User$refreshTokenInfoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokenInfoArgs<ExtArgs>>): Prisma.Prisma__RefreshTokenInfoClient<runtime.Types.Result.GetResult<Prisma.$RefreshTokenInfoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  UserApiUsage<T extends Prisma.User$UserApiUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$UserApiUsageArgs<ExtArgs>>): Prisma.Prisma__UserApiServiceUsageClient<runtime.Types.Result.GetResult<Prisma.$UserApiServiceUsagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -957,8 +1001,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly hashedPassword: Prisma.FieldRef<"User", 'String'>
   readonly isAdmin: Prisma.FieldRef<"User", 'Boolean'>
-  readonly obsVaultMcpTokenLimit: Prisma.FieldRef<"User", 'Int'>
-  readonly obsVaultMcpTokensUsed: Prisma.FieldRef<"User", 'Int'>
+  readonly apiServiceCallLimit: Prisma.FieldRef<"User", 'Int'>
 }
     
 
@@ -1363,6 +1406,25 @@ export type User$refreshTokenInfoArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.RefreshTokenInfoInclude<ExtArgs> | null
   where?: Prisma.RefreshTokenInfoWhereInput
+}
+
+/**
+ * User.UserApiUsage
+ */
+export type User$UserApiUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserApiServiceUsage
+   */
+  select?: Prisma.UserApiServiceUsageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserApiServiceUsage
+   */
+  omit?: Prisma.UserApiServiceUsageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserApiServiceUsageInclude<ExtArgs> | null
+  where?: Prisma.UserApiServiceUsageWhereInput
 }
 
 /**
