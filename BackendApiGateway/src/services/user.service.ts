@@ -114,7 +114,7 @@ export class UserService {
     }
 
     const apiServiceCallLimit: number | undefined = updateUserValues.apiServiceCallLimit;
-    const email: string | undefined = updateUserValues.email
+    // const email: string | undefined = updateUserValues.email;
     // const password: string | undefined = updateUserValues.password
 
     // === domain / business logic level validation ===
@@ -125,14 +125,14 @@ export class UserService {
       throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, API_SERVICE_USAGE_ERRORS.GREATER_THAN_MAX_NUM_USES_ERROR);
     }
 
-    if (email) {
-      const existingUser = await this.findUserByEmail(email);
+    // if (email) {
+    //   const existingUser = await this.findUserByEmail(email);
 
-      // if the email is already associated with an existing user
-      if (existingUser) {
-        throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMAIL_ALREADY_EXISTS_ERROR);
-      }
-    }
+    //   // if the email is already associated with an existing user
+    //   if (existingUser) {
+    //     throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMAIL_ALREADY_EXISTS_ERROR);
+    //   }
+    // }
 
     // if (
     //   password && 

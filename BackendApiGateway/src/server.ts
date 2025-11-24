@@ -237,18 +237,12 @@ app.get("/api/admin/users",
  *          schema: 
  *            type: object
  *            properties:
- *              email:
- *                type: string
- *                description: The users email
  *              userType:
  *                type: integer
  *                description: Enum of the users type
  *              apiServiceCallLimit:
  *                type: integer
  *                description: The amount of calls the user can make
- *            required:
- *              - email
- *              - password
  *        
  *  responses:
  *    200:

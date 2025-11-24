@@ -37,5 +37,6 @@ export type GetUserResponseDTO = Omit<User, 'hashedPassword'>;
 // only id is required, the rest are optional
 export type UpdateUserRequestDTO = Omit<
   Partial<Omit<User, 'id'>> & Pick<User, 'id'>, 
+  'email' |
   'hashedPassword'
 >;
