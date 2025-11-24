@@ -27,6 +27,10 @@ export class UserService {
 
   public async createNewUser(email: string, password: string): Promise<User> {
 
+    if (password.length < UserService.MIN_PASSWORD_LENGTH) {
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.LESS_THAN_MIN_PASSWORD_LENGTH);
+    }
+
     const hashedPassword = await UserService.hashPassword(password);
 
     const newUser: User = await prisma.user.create({

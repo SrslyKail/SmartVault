@@ -1,19 +1,28 @@
 import { HTTP_STATUS_CODES } from "../../constants/httpResponse.ts";
 import { HttpError } from "../../errors/httpError.ts";
 import { AUTH_ERRORS } from "../../lang/en.ts";
+import { CreateUserSchema } from "./user.validationSchema.ts";
 
 export class UserValidator {
   constructor() {}
 
-  //todo: use joi schema evaluation instead
-  public tryValidateEmailAndPassword(email: string, password: string) {
-    if (!email) {
+  public tryValidateEmailAndPassword(reqDTO: { email: string, password: string }) {
+    if (!reqDTO.email) {
       throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMPTY_EMAIL_ERROR);
     }
-    if (!password) {
+    if (!reqDTO.password) {
       throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, AUTH_ERRORS.EMPTY_PASSWORD_ERROR);
     }
 
-    //todo: add email and password restrictions (ex. length, allowed characters)
+    const parsedResult = CreateUserSchema.safeParse(reqDTO);
+    
+    if (!parsedResult.success) {
+      const errorMsgs = parsedResult.error.issues.map(err => err.message);;
+      const errorMsgsString = JSON.stringify(errorMsgs);
+
+      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, errorMsgsString);
+    }
+    
+    return parsedResult.data;
   }
 }

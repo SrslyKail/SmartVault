@@ -10,6 +10,7 @@ import { AUTH_ERRORS, AUTH_MESSAGES, HTTP_ERRORS } from '../lang/en.ts';
 import type { User, UserType } from '../data/models/generated/prisma/client.ts';
 import { ACCESS_TOKEN_COOKIE_KEY, REFRESH_TOKEN_COOKIE_KEY } from '../constants/authTokens.ts';
 import { isProd } from '../constants/isProd.ts';
+import { CreateUserSchema } from '../validation/user/user.validationSchema.ts';
 
 export class AuthController {
 
@@ -33,10 +34,9 @@ export class AuthController {
    */
   public async login(req: Request, res: Response) {
     try {
-      const { email, password, } = req.body;
+      const reqDto = req.body;
+      const { email, password } = this.userValidator.tryValidateEmailAndPassword(reqDto);
 
-      //TODO: add login validation here
-      
       const user: User = await this.userService.tryFindUserByEmailAndPassword(email, password);
 
       const authTokens: AuthTokens = await this.authTokenService.createAuthTokens(user);
@@ -72,10 +72,8 @@ export class AuthController {
    */
   public async signup(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
-
-      //todo: validate email and password using joi
-      this.userValidator.tryValidateEmailAndPassword(email, password);
+      const reqDto = req.body;
+      const { email, password } = this.userValidator.tryValidateEmailAndPassword(reqDto);
 
       const existingUser = await this.userService.findUserByEmail(email);
 
