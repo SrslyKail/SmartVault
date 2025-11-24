@@ -40,8 +40,12 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
 
     public async Task Logout()
     {
-        User = null; // don't cache anything in local storage
-        _navigationManager.NavigateTo("/api/auth/logout");
+        await Task.Run(() =>
+        {
+            User = null; // don't cache anything in local storage
+            _navigationManager.NavigateTo("/api/auth/logout");
+        });
+        
     }
 
     public async Task Register(RegistrationRequestDTO model)
