@@ -114,13 +114,87 @@ app.post("/api/auth/login", authController.login.bind(authController));
  *      description: The signup was successful
  */
 app.post("/api/auth/signup", authController.signup.bind(authController));
+
+/**
+ * @openapi
+ * /api/auth/logout:
+ *  post:
+ *    summary: Logs a user out via their auth cookie
+ *    parameters:
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: integer
+ *          format: int64
+ *  responses:
+ *    200:
+ *      description: The log out was successful
+ */
 app.post("/api/auth/logout", authController.authenticate.bind(authController), authController.logout.bind(authController));
+
+/**
+ * @openapi
+ * /api/auth/me:
+ *  get:
+ *    summary: Gets information about the current user
+ *    parameters:
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: integer
+ *          format: int64
+ *        
+ *  responses:
+ *    200:
+ *      description: The information
+ */
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(usersController));
 app.get("/api-doc", swaggerUi.setup(swaggerSpec));
 
 // === User related endpoints ===
 
 // --- ADMIN ONLY ---
+/**
+ * @openapi
+ * /api/admin/users/:id::
+ *  patch:
+ *    summary: Updates the user with the given ID
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the user to update
+ *        schema:
+ *          type: integer
+ *          format: int64
+ *    requestBody:
+ *      required: true
+ *      content:
+ *       application/json:
+ *          schema: 
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                description: The users email
+ *              userType:
+ *                type: integer
+ *                description: Enum of the users type
+ *              apiServiceCallLimit:
+ *                type: integer
+ *                description: The amount of calls the user can make
+ *            required:
+ *              - email
+ *              - password
+ *        
+ *  responses:
+ *    200:
+ *      description: The user has been updated
+ */
 app.patch("/api/admin/users/:id", 
   authController.authenticate.bind(authController),
   (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
@@ -128,6 +202,24 @@ app.patch("/api/admin/users/:id",
 );
 
 // --- ADMIN ONLY ---
+/**
+ * @openapi
+ * /api/admin/users/:id::
+ *  delete:
+ *    summary: delete the user with the given ID
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the user to delete
+ *        schema:
+ *          type: integer
+ *          format: int64
+ *        
+ *  responses:
+ *    200:
+ *      description: The user has been deleted
+ */
 app.delete("/api/admin/users/:id", 
   authController.authenticate.bind(authController),
   (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
