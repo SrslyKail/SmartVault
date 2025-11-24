@@ -35,4 +35,7 @@ export type RefreshTokenClaims = JWTTokenStandardClaims & {
 export type GetUserResponse = Omit<User, 'hashedPassword'>;
 
 // only id is required, the rest are optional
-export type UpdateUserRequestDTO = Partial<Omit<User, 'id'>> & Pick<User, 'id'>;
+export type UpdateUserRequestDTO = Omit<
+  Partial<Omit<User, 'id'>> & Pick<User, 'id'>, 
+  'hashedPassword'
+>;

@@ -56,10 +56,18 @@ app.get("/api/auth/me", authController.authenticate.bind(authController), usersC
 
 // === User related endpoints ===
 
-app.patch("/api/admin/users", 
+// --- ADMIN ONLY ---
+app.patch("/api/admin/users/:id", 
   authController.authenticate.bind(authController),
   (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
-  usersController.patchUpdateUser.bind(usersController)
+  usersController.updateUserById.bind(usersController)
+);
+
+// --- ADMIN ONLY ---
+app.delete("/api/admin/users/:id", 
+  authController.authenticate.bind(authController),
+  (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
+  usersController.deleteUserById.bind(usersController)
 );
 
 // === Obsidian Vault MCP endpoints (currently limited to 20 for all users) ===

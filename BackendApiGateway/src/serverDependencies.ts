@@ -24,5 +24,5 @@ const apiCallLimiter = new APICallLimiter(userApiUsageService);
 
 // Controllers
 export const authController     = new AuthController(authTokenService, userService, userValidator);
-export const usersController    = new UsersController(userService);
+export const usersController    = new UsersController(userService, authTokenService);
 export const obsVaultController = new ObsVaultController(obsVaultService, mcpPromptValidator, apiCallLimiter, userApiUsageService);

@@ -27,7 +27,7 @@ export class UserService {
 
   public async createNewUser(email: string, password: string): Promise<User> {
 
-    const hashedPassword = await bcrypt.hash(password, UserService.NUM_SALT_ROUNDS);
+    const hashedPassword = await UserService.hashPassword(password);
 
     const newUser: User = await prisma.user.create({
       data: {
@@ -98,7 +98,7 @@ export class UserService {
 
     const apiServiceCallLimit: number | undefined = updateUserValues.apiServiceCallLimit;
     const email: string | undefined = updateUserValues.email
-    const hashedPassword: string | undefined = updateUserValues.hashedPassword
+    // const password: string | undefined = updateUserValues.password
 
     // === domain / business logic level validation ===
     if (
@@ -117,23 +117,49 @@ export class UserService {
       }
     }
 
-    if (
-      hashedPassword && 
-      hashedPassword.length < UserService.MIN_PASSWORD_LENGTH
-    ) {
-      throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.LESS_THAN_MIN_PASSWORD_LENGTH);
-    }
+    // if (
+    //   password && 
+    //   password.length < UserService.MIN_PASSWORD_LENGTH
+    // ) {
+    //   throw new HttpError(HTTP_STATUS_CODES.BAD_REQUEST, USER_ERRORS.LESS_THAN_MIN_PASSWORD_LENGTH);
+    // }
+
+    // // hash password
+    // const hashedPassword = password ? await UserService.hashPassword(password) : undefined;
 
     // remove undefined fields
     const userPropsToUpdate = removeUndefinedObjectProps(updateUserValues);
 
+    // // remove plain text password
+    // delete userPropsToUpdate.password;
+
     const updatedUser: User = await prisma.user.update({
       where: { id: foundUser.id },
       data: {
-        ...userPropsToUpdate
+
+        ...userPropsToUpdate,
+        // hashedPassword: hashedPassword
       }
     });
 
     return updatedUser;
+  }
+
+  public async deleteUserWithId(userId: string) {
+    const foundUser: User | null = await this.getUserById(userId);
+
+    // if user does not exist
+    if (!foundUser) {
+      throw new HttpError(HTTP_STATUS_CODES.NOT_FOUND, AUTH_ERRORS.USER_NOT_FOUND_WITH_ID_ERROR);
+    }
+
+    await prisma.user.delete({
+      where: { id: userId }
+    });
+  }
+
+  private static async hashPassword(password: string) {
+    const hashedPassword = await bcrypt.hash(password, UserService.NUM_SALT_ROUNDS);
+    return hashedPassword;
   }
 }

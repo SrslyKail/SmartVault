@@ -50,5 +50,10 @@ export const API_SERVICE_USAGE_ERRORS = {
 export const USER_ERRORS = {
   INVALID_EMAIL: "The entered email is invalid. Please check the format.",
   INVALID_USER_TYPE: `The entered user type is invalid. Valid types are ${UserType.REG_USER} and ${UserType.ADMIN}`,
-  LESS_THAN_MIN_PASSWORD_LENGTH: `Password must be ${UserService.MIN_PASSWORD_LENGTH} characters or more`
+  LESS_THAN_MIN_PASSWORD_LENGTH: `Password must be ${UserService.MIN_PASSWORD_LENGTH} characters or more`,
+  MISSING_USER_ID: "No user id was provided of the user to update"
+};
+
+export const USER_MESSAGES = {
+  DELETED_USER: "Successfully deleted user with id"
 };
