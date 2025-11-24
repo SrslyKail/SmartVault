@@ -153,12 +153,33 @@ app.post("/api/auth/logout", authController.authenticate.bind(authController), a
  *      description: The information
  */
 app.get("/api/auth/me", authController.authenticate.bind(authController), usersController.getCurrentUser.bind(usersController));
-app.get("/api-doc", swaggerUi.setup(swaggerSpec));
 
 // === User related endpoints ===
 
   // --- ADMIN ONLY ---
-//TODO: swagger openapi decorator
+/**
+ * @openapi
+ * /api/admin/users/:id:
+ *  get:
+ *    summary: Gets the user with the given ID
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the user to retrieve
+ *        schema:
+ *          type: string
+ *          format: uuid
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: string
+ *  responses:
+ *    200:
+ *      description: The user information
+ */
 app.get("/api/admin/users/:id", 
   authController.authenticate.bind(authController), 
   (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
@@ -166,7 +187,22 @@ app.get("/api/admin/users/:id",
 );
 
   // --- ADMIN ONLY ---
-//TODO: swagger openapi decorator
+/**
+ * @openapi
+ * /api/admin/users:
+ *  get:
+ *    summary: Gets all users and their API call totals
+ *    parameters:
+ *      - name: authcookie
+ *        in: cookie
+ *        required: true
+ *        description: Authentication cookie from logging in
+ *        schema:
+ *          type: string
+ *  responses:
+ *    200:
+ *      description: List of all users with their API call totals
+ */
 app.get("/api/admin/users",
   authController.authenticate.bind(authController), 
   (req, res, next) => authController.checkIfAuthorized(req, res, UserType.ADMIN, next),
@@ -286,5 +322,8 @@ app.delete("/api/admin/users/:id",
  *      description: The user has been deleted
  */
 app.post("/api/obs-vault/chat", authController.authenticate.bind(authController), obsVaultController.createPromptAndGetResponse.bind(obsVaultController));
+
+// Swagger api doc
+app.get("/api-doc", swaggerUi.setup(swaggerSpec));
 
 app.listen(port, () => console.log(`App is listening on port ${port} - http://localhost:${port}`));
