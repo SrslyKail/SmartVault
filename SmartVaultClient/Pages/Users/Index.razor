@@ -21,19 +21,23 @@
             {
                 <tr>
                     <td>@user.Email</td>
-                    <td>@user.TokenLimit</td>
-                    <td>@user.TokensUsed</td>
-                    <td>@user.IsAdmin</td>
+                    <td>@user.ApiServiceCallLimit</td>
+                    @* <td>@user.TokensUsed</td> *@
+                    <td>@(user.UserType == UserType.ADMIN)</td>
                     <td style="white-space: nowrap">
-                        <button @onclick="@(() => DeleteUser(user.Id))" disabled="@user.IsDeleting" class="btn btn-sm btn-danger btn-delete-user">
-                            @if (user.IsDeleting) 
-                            {
-                                <span class="spinner-border spinner-border-sm"></span>
-                            }
+                        <button 
+                            @* @onclick="@(() => DeleteUser(user.Id))" 
+                            disabled="@user.IsDeleting"  *@
+                            class="btn btn-sm btn-danger btn-delete-user"
+                        >
+                            @* @if (user.IsDeleting) 
+                            { *@
+                                @* <span class="spinner-border spinner-border-sm"></span> *@
+                            @* }
                             else
-                            {
+                            { *@
                                 <span>Delete</span>
-                            }
+                            @* } *@
                         </button>
                     </td>
                 </tr>
@@ -66,7 +70,7 @@
     private async void DeleteUser(string id) 
     {
         var user = users.First(x => x.Id == id);
-        user.IsDeleting = true;
+        @* user.IsDeleting = true; *@
         await AccountService.Delete(id);
         users.Remove(user);
         StateHasChanged();

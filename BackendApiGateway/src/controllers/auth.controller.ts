@@ -174,6 +174,23 @@ export class AuthController {
 
       await this.authTokenService.invalidateAllCurrentRefreshTokensWithUserId(userId);
 
+      // Clear browser httponly cookies
+      res.clearCookie(ACCESS_TOKEN_COOKIE_KEY, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: "lax",
+        path: "/",
+        ...(isProd && process.env.DOMAIN ? { domain: `.${process.env.DOMAIN}` } : {}),
+      });
+
+      res.clearCookie(REFRESH_TOKEN_COOKIE_KEY, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: "lax",
+        path: "/",
+        ...(isProd && process.env.DOMAIN ? { domain: `.${process.env.DOMAIN}` } : {}),
+      });
+
       const resData = {
         message: AUTH_MESSAGES.SUCCESSFUL_LOGOUT
       };

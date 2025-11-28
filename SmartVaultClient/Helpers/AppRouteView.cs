@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using SmartVaultClient.Models;
 using SmartVaultClient.Services;
 
 namespace SmartVaultClient.Helpers;
@@ -51,7 +52,7 @@ public class AppRouteView : RouteView
             var returnUrl = WebUtility.UrlEncode(new Uri(NavigationManager.Uri).PathAndQuery);
             NavigationManager.NavigateTo($"account/login?returnUrl={returnUrl}");
         }
-        else if (adminAuthorize && AccountService.User?.IsAdmin != true)
+        else if (adminAuthorize && AccountService.User?.UserType == UserType.REG_USER)
         {
             if (AccountService.User == null)
             {

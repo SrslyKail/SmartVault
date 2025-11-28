@@ -8,7 +8,7 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="navbar-nav">
             <NavLink href="" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
-            @if (AccountService.User != null && AccountService.User.IsAdmin)
+            @if (AccountService.User != null && AccountService.User.UserType == UserType.ADMIN)
             {
             <NavLink href="users" class="nav-item nav-link">Users</NavLink>
             }

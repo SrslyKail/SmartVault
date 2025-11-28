@@ -27,25 +27,28 @@ public class AccountService(IHttpService httpService, NavigationManager navigati
 
     // don't cache anything in local storage
     public async Task Initialize()
-    {
-        // get user from API, not from local storage
-        User = await GetCurrentUser();
-    }
+    {}
 
     // server won't send anything back on login, so we can't get the user information just from a log in
     public async Task Login(LoginRequestDTO model)
     {
         await _httpService.Post<RegistrationResponseDTO>("/api/auth/login", model);
+        
+        // get user information from backend API
+        User = await GetCurrentUser();
     }
 
     public async Task Logout()
     {
-        await Task.Run(() =>
-        {
-            User = null; // don't cache anything in local storage
-            _navigationManager.NavigateTo("/api/auth/logout");
-        });
-        
+        // await Task.Run(() =>
+        // {
+        //     User = null; // don't cache anything in local storage
+            
+        // });
+
+        await _httpService.Post("/api/auth/logout", new { });
+        User = null;
+        _navigationManager.NavigateTo("/account/login");
     }
 
     public async Task Register(RegistrationRequestDTO model)
